@@ -21,30 +21,13 @@
 
 // var User = mongoose.model("user", userSchema)
 
-// var createUser = async() =>{
-//     var bob = new User({
-//         uname: "bob",
-//         password: "12"
-//     })
 
-//     try{
-        
-//         await bob.save()
-//         console.log('done!')
-//     }
-//     catch(e){
-//         console.log("SORRY")
-//         console.log(e.codeName)
-//     }
-//     process.exit()
-// }
 
 // app.post('localhost:3000/sendLogin', (req, res)=>{
 //     console.log("next is the req body")
 //     console.log(req.body)
 //     res.json({status:"ok"})
 // })
-// // createUser()
 
 // app.get('/hello', (req,res)=>{
 //     res.send('welcome!!')
@@ -59,7 +42,7 @@ const mongoose = require('mongoose')
 const User = require("./user.model")
 
 mongoose.set('strictQuery', false);
-const uri = 'mongodb://cmpt372:TimeToStudy@34.170.98.49:27017/'
+const uri = 'mongodb://cmpt372:TimeToStudy@34.170.98.49:27017/studybuddy?authSource=admin'
 const connectParams = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -72,15 +55,35 @@ mongoose.connect(uri, connectParams).then(()=> {
 })
 
 //only local copy in js program
-const user = new User()
-user.uname = "katie";
-user.password = 12345;
-user.save((err, savedJob)=> {
-    if (err){
-        console.log(err);
+// const user = new User()
+// user.uname = "katie";
+// user.password = 12345;
+// user.save((err, savedJob)=> {
+//     if (err){
+//         console.log(err);
+//     }
+//     else{
+//         console.log(savedJob);
+//     }
+// })
+
+var createUser = async() =>{
+    var bob = new User({
+        uname: "bob",
+        password: "12"
+    })
+
+    try{
+        
+        await bob.save()
+        console.log('done!')
     }
-    else{
-        console.log(savedJob);
+    catch(e){
+        console.log("SORRY")
+        console.log(e.codeName)
     }
-})
+    process.exit()
+}
+
+createUser()
 
