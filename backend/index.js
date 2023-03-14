@@ -1,48 +1,86 @@
-const express = require('express')
-const mongoose = require('mongoose')
-const app = express()
+// const express = require('express')
+// const mongoose = require('mongoose')
+// const app = express()
+// const cors = require('cors')
 
-const uri = "mongodb://cmpt372:TimeToStudy@34.170.98.49:27017"
-// let MongoClient = require('mongodb').
+// app.use(cors())
+// app.use(express.json())
 
-mongoose.set('strictQuery', true);
+// const uri = "mongodb://cmpt372:TimeToStudy@34.170.98.49:27017/studybuddy?authSource=admin"
+// mongoose.set('strictQuery', true);
+// mongoose.connect(uri,{useNewUrlParser: true})
+// var db = mongoose.connection
+// db.on('error', console.error.bind(console, "connection error"))
 
-mongoose.connect(uri,{useNewUrlParser: true})
-var db = mongoose.connection
-console.log("AFTER CONNECTING DB", db)
-db.on('error', console.error.bind(console, "connection error"))
+// var Schema = mongoose.Schema;
 
-// 
+// var userSchema = new Schema({
+//     uname: {type: String},
+//     password: {type:String, minlength: 2}
+// })
 
+// var User = mongoose.model("user", userSchema)
 
+// var createUser = async() =>{
+//     var bob = new User({
+//         uname: "bob",
+//         password: "12"
+//     })
 
-var Schema = mongoose.Schema;
-
-var userSchema = new Schema({
-    uname: {type: String},
-    password: {type:String, minlength: 2}
-})
-
-var User = mongoose.model("user", userSchema)
-
-var createUser = async() =>{
-    var bob = new User({
-        uname: "bob",
-        password: "12"
-    })
-
-    try{
+//     try{
         
-        await bob.save()
-        console.log('done!')
-    }
-    catch(e){
-        console.log("SORRY")
-        console.log(e.codeName)
-    }
-    process.exit()
+//         await bob.save()
+//         console.log('done!')
+//     }
+//     catch(e){
+//         console.log("SORRY")
+//         console.log(e.codeName)
+//     }
+//     process.exit()
+// }
+
+// app.post('localhost:3000/sendLogin', (req, res)=>{
+//     console.log("next is the req body")
+//     console.log(req.body)
+//     res.json({status:"ok"})
+// })
+// // createUser()
+
+// app.get('/hello', (req,res)=>{
+//     res.send('welcome!!')
+// })
+
+// app.listen(1234, ()=>{
+//     console.log('** Server Starting **')
+// })
+
+
+const mongoose = require('mongoose')
+const User = require("./user.model")
+
+mongoose.set('strictQuery', false);
+const uri = 'mongodb://cmpt372:TimeToStudy@34.170.98.49:27017/'
+const connectParams = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
 }
 
-createUser()
+mongoose.connect(uri, connectParams).then(()=> {
+    console.log("Connected to DB");
+}).catch((e)=>{
+    console.log("ERROR: ", e);
+})
 
-//admin:WebDevIsFun@34.170.98.49:27017/?authMechanism=DEFAULT
+//only local copy in js program
+const user = new User()
+user.uname = "katie";
+user.password = 12345;
+user.save((err, savedJob)=> {
+    if (err){
+        console.log(err);
+    }
+    else{
+        console.log(savedJob);
+    }
+})
+
