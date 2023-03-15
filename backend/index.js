@@ -1,4 +1,5 @@
 
+/*
 const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
@@ -65,4 +66,4 @@ app.post('/sendLogin', async (req, res)=>{
 app.listen(1234, ()=>{
     console.log('** Server Starting **')
 })
-
+*/
