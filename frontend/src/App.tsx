@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import {
   BrowserRouter as Router,
@@ -12,7 +11,7 @@ import RootPage from './RootPage';
 import {useState} from 'react'
 
 function App() {
-
+/*
   const [uname, setName] = useState('')
   const [password, setPassword] = useState('')
 
@@ -35,18 +34,16 @@ function App() {
     console.log(" THIS IS THE DATA", data)
     setName(data.uname)
   }
-
+*/
   return (
+    
     <Router>
       <Routes>
-        <Route path="/login">
-          <LoginPage />
-        </Route>
-        <Route path="/">
-          <RootPage />
-        </Route>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/welcome"  element={<RootPage />}/>
       </Routes>
     </Router>
+    
   );
 }
 
