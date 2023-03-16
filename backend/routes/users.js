@@ -4,10 +4,9 @@ const User = require('../user.model');
 
 router.post('/auth', async function(req, res, next) {
   const { username, password } = req.body;
-  res.redirect('/welcome');
-
+  
   User.findOne({ username: username }, function(err, user) {
-    console.log(req.session)
+    
     if (err) {
       return next(err);
     }
@@ -16,6 +15,15 @@ router.post('/auth', async function(req, res, next) {
     }
 
     req.session.user = user;
+    req.session.regenerate(function(err) {
+      if (err) {
+        console.log(err)
+      } else {
+        // the session has been regenerated, do something with it
+      }
+    });
+    console.log(req.session.user)
+    res.redirect('/welcome');
   });
   
 });
