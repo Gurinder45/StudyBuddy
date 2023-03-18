@@ -65,6 +65,17 @@ router.post('/signup', async function(req,res,next){
   }
 })
 
+router.get('/check-username/:username', async (req, res) => {
+  const username = req.params.username;
+  // Check if username exists in database
+  const user = await User.findOne({ username: username });
+  if (user) {
+    res.json({ exists: true });
+  } else {
+    res.json({ exists: false });
+  }
+});
+
 router.get('/check-logged-in', async function(req, res, next) {
   console.log(req.session)
   console.log(req.sessionID)

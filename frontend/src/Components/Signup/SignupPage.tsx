@@ -14,9 +14,26 @@ function SignupPage() {
     const [password, setPassword] = useState("");
     const [university, setUniversity] = useState("");
     const [courses, setCourses] = useState([]);
+    const [usernameError, setUsernameError] = useState('');
 
-    const handleUsernameChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-        setUsername(event.target.value);
+    const handleUsernameChange = async (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        const newUsername = event.target.value;
+        setUsername(newUsername);
+        if(newUsername.length >0){
+            try {
+                const response = await fetch(`/users/check-username/${newUsername}`);
+                const data  = await response.json();
+                if (data.exists) {
+                    setUsernameError('Username is already taken.');
+                } else {
+                    setUsernameError('');
+                }
+            } catch (error) {
+                console.error(error);
+                setUsernameError('Error checking username availability.');
+            }
+        }
+        
     };
 
     const handlePasswordChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
@@ -67,8 +84,21 @@ function SignupPage() {
                 type="text"
                 value={username}
                 onChange={handleUsernameChange}
+                required
+                minLength={3}
             />
             </label>
+            {username.length < 3 && (
+            <p style={{ color: 'red' }}>
+                Username must be at least 3 characters long
+            </p>
+            )}
+            {username.length === 0 &&usernameError && (
+            <p style={{ color: 'red' }}>
+                {usernameError}
+            </p>
+            )}
+
             <br />
             <label>
             Password:
@@ -76,8 +106,15 @@ function SignupPage() {
                 type="password"
                 value={password}
                 onChange={handlePasswordChange}
+                required
+                minLength={8}
             />
             </label>
+            {password.length < 4 && (
+            <p style={{ color: 'red' }}>
+                Password must be at least 4 characters long
+            </p>
+            )}
             <br />
             <label>
             University:
@@ -85,17 +122,30 @@ function SignupPage() {
                 type="text"
                 value={university}
                 onChange={handleUniversityChange}
+                required
             />
             </label>
+            {!university && (
+            <p style={{ color: 'red' }}>University field cannot be empty</p>
+            )}
             <br />
             <label>
-                Courses (comma-separated):
-                <input type="text" value={courses.join(',')} onChange={handleCoursesChange} />
+            Courses (comma-separated):
+            <input
+                type="text"
+                value={courses.join(',')}
+                onChange={handleCoursesChange}
+                required
+            />
             </label>
+            {courses.length === 0 && (
+            <p style={{ color: 'red' }}>At least one course is required</p>
+            )}
             <br />
             <button type="submit">Submit</button>
         </form>
         </div>
+
     );
 }
 
