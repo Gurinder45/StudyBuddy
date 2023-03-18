@@ -20,7 +20,7 @@ function LoginPage() {
 
     if (response.ok) {
       // Login successful
-      navigate("/welcome")
+      navigate("/")
       console.log('Login successful');
     } else {
       // Login failed

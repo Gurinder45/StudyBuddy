@@ -1,16 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import {
-  BrowserRouter as Router,
-  Routes,
   Route,
-  Link
+  createBrowserRouter,
+  RouterProvider,
+  createRoutesFromElements
 } from "react-router-dom";
+
 import LoginPage from './LoginPage';
-import RootPage from './RootPage';
-import {useState} from 'react'
+import RootPage, { checkLoggedIn } from './RootPage';
 
 function App() {
+
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route path = "/" element = {<RootPage />}>
+        <Route 
+        index 
+        element = {<RootPage/>}
+        loader = {checkLoggedIn}
+        />
+
+        <Route path="login" element={<LoginPage />} />
+        
+      </Route>
+    )
+  )
 /*
   const [uname, setName] = useState('')
   const [password, setPassword] = useState('')
@@ -34,16 +49,14 @@ function App() {
     console.log(" THIS IS THE DATA", data)
     setName(data.uname)
   }
-*/
-  return (
-    
-    <Router>
-      <Routes>
+  <Route path="/"
+          element={loggedIn ?(<Navigate replace to="/welcome" />): (<Navigate replace to="/login" />)}
+          />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/welcome"  element={<RootPage />}/>
-      </Routes>
-    </Router>
-    
+*/
+  return (
+    <RouterProvider router={router} />
   );
 }
 

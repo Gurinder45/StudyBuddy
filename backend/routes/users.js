@@ -22,10 +22,19 @@ router.post('/auth', async function(req, res, next) {
         // the session has been regenerated, do something with it
       }
     });
-    console.log(req.session.user)
-    res.redirect('/welcome');
+    res.redirect('/');
   });
   
+});
+
+router.get('/check-logged-in', async function(req, res, next) {
+  console.log(req.session.user)
+  let loggedIn = false
+  if(req.session.user){
+    loggedIn = true
+  }
+  
+  res.json({ loggedIn });
 });
 
 
