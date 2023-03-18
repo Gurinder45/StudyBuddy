@@ -15,7 +15,7 @@ function App() {
 
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path = "/"
+      <Route
       >
         <Route path="/welcome" element = {<RootPage/>} loader = {checkLoggedIn}
         />

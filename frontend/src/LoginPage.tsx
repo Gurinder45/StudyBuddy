@@ -8,7 +8,7 @@ function LoginPage() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const response = await fetch('http://localhost:8080/users/auth', {
+    const response = await fetch('/users/auth', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

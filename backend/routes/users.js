@@ -47,4 +47,16 @@ router.get('/check-logged-in', async function(req, res, next) {
 });
 
 
+router.get('/logout', function(req, res, next) {
+  let loggedOut = true
+  req.session.destroy(function(err) {
+    if (err) {
+      loggedOut = false
+    }
+
+    res.json({ loggedOut });
+  });
+});
+
+
 module.exports = router;

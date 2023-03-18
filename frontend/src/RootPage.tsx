@@ -10,16 +10,30 @@ export default function RootPage() {
       setTimeout(() => navigate('/login'), 0);
     }
   }, [data.loggedIn]);
+
+  const logout = async (event: any)=>{
+    event.preventDefault();
+
+    const response = await fetch('/users/logout');
+    const data = await response.json();
+    if(data.loggedOut){
+      setTimeout(() => navigate('/login'), 0);
+    }
+
+  }
+
   return (
     <div>
       <h2>Welcome</h2>
-      {/* Add your main app UI elements here */}
+      <button onClick={logout}>
+          Log Out
+      </button>
     </div>
   );
 }
 
 export const checkLoggedIn = async()=> {
-  const response = await fetch('http://localhost:8080/users/check-logged-in');
+  const response = await fetch('/users/check-logged-in');
   const data = await response.json();
   return data;
 }
