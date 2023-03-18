@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
-
+import './SignupPage.css';
 function SignupPage() {
     const navigate = useNavigate();
     const data:any = useLoaderData();
@@ -13,7 +13,7 @@ function SignupPage() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [university, setUniversity] = useState("");
-    const [courses, setCourses] = useState("");
+    const [courses, setCourses] = useState([]);
 
     const handleUsernameChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
         setUsername(event.target.value);
@@ -27,8 +27,8 @@ function SignupPage() {
         setUniversity(event.target.value);
     };
 
-    const handleCoursesChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-        setCourses(event.target.value);
+    const handleCoursesChange = (event:any) => {
+        setCourses(event.target.value.split(','));
     };
 
     const handleSubmit = async (event: { preventDefault: () => void; }) => {
@@ -89,8 +89,8 @@ function SignupPage() {
             </label>
             <br />
             <label>
-            Courses:
-            <input type="text" value={courses} onChange={handleCoursesChange} />
+                Courses (comma-separated):
+                <input type="text" value={courses.join(',')} onChange={handleCoursesChange} />
             </label>
             <br />
             <button type="submit">Submit</button>
