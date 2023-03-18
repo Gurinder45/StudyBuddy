@@ -20,7 +20,6 @@ export default function RootPage() {
 
 export const checkLoggedIn = async()=> {
   const response = await fetch('http://localhost:8080/users/check-logged-in');
-  console.log(response)
   const data = await response.json();
   return data;
 }
