@@ -6,7 +6,7 @@ router.post('/auth', async function(req, res, next) {
   console.log("heeee")
   const { username, password } = req.body;
   
-  User.findOne({ username: username }, function(err, user) {
+  User.findOne({ username: username, password: password }, function(err, user) {
     
     if (err) {
       return next(err);
