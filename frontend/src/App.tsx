@@ -21,6 +21,8 @@ function App() {
         />
 
         <Route path="/login" element={<LoginPage />} />
+
+        <Route path="*" element={<Navigate to="/welcome" replace />} />
         
       </Route>
       
