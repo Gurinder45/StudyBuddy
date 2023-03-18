@@ -47,7 +47,18 @@ router.post('/signup', async function(req,res,next){
   // save the new user to the database
   try {
     await user.save();
-    res.status(200).send('Signup successful');
+    req.session.regenerate(function(err) {
+      if (err) {
+        console.log(err)
+        res.status(500).send('Session regeneration failed');
+      } else {
+        req.session.user = user;
+        console.log(req.session)
+        console.log(req.sessionID)
+        // the session has been regenerated, do something with it
+        res.status(200).send('Login successful');
+      }
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send('Error creating user');

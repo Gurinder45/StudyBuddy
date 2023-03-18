@@ -1,85 +1,102 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useLoaderData, useNavigate } from "react-router-dom";
 
 function SignupPage() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [university, setUniversity] = useState("");
-  const [courses, setCourses] = useState("");
+    const navigate = useNavigate();
+    const data:any = useLoaderData();
+    
+    useEffect(() => {
+        if (data.loggedIn) {
+        setTimeout(() => navigate('/welcome'), 0);
+        }
+    }, [data.loggedIn]);
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [university, setUniversity] = useState("");
+    const [courses, setCourses] = useState("");
 
-  const handleUsernameChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-    setUsername(event.target.value);
-  };
+    const handleUsernameChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setUsername(event.target.value);
+    };
 
-  const handlePasswordChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-    setPassword(event.target.value);
-  };
+    const handlePasswordChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setPassword(event.target.value);
+    };
 
-  const handleUniversityChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-    setUniversity(event.target.value);
-  };
+    const handleUniversityChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setUniversity(event.target.value);
+    };
 
-  const handleCoursesChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-    setCourses(event.target.value);
-  };
+    const handleCoursesChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setCourses(event.target.value);
+    };
 
-  const handleSubmit = async (event: { preventDefault: () => void; }) => {
-    event.preventDefault();
-    const response = await fetch("/users/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        password,
-        university,
-        courses,
-      }),
-    });
-    const data = await response.json();
-    console.log(data);
-  };
+    const handleSubmit = async (event: { preventDefault: () => void; }) => {
+        event.preventDefault();
+        const response = await fetch("/users/signup", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            username,
+            password,
+            university,
+            courses,
+        }),
+        });
 
-  return (
-    <div>
-      <h2>Signup Page</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Username:
-          <input
-            type="text"
-            value={username}
-            onChange={handleUsernameChange}
-          />
-        </label>
-        <br />
-        <label>
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-          />
-        </label>
-        <br />
-        <label>
-          University:
-          <input
-            type="text"
-            value={university}
-            onChange={handleUniversityChange}
-          />
-        </label>
-        <br />
-        <label>
-          Courses:
-          <input type="text" value={courses} onChange={handleCoursesChange} />
-        </label>
-        <br />
-        <button type="submit">Submit</button>
-      </form>
-    </div>
-  );
+        if (response.ok) {
+            // Login successful
+            navigate("/welcome")
+            console.log('Signup successful');
+        } 
+        else {
+            // Login failed
+            console.log('Signup failed');
+        }
+    };
+
+    return (
+        <div>
+        <h2>Signup Page</h2>
+        <form onSubmit={handleSubmit}>
+            <label>
+            Username:
+            <input
+                type="text"
+                value={username}
+                onChange={handleUsernameChange}
+            />
+            </label>
+            <br />
+            <label>
+            Password:
+            <input
+                type="password"
+                value={password}
+                onChange={handlePasswordChange}
+            />
+            </label>
+            <br />
+            <label>
+            University:
+            <input
+                type="text"
+                value={university}
+                onChange={handleUniversityChange}
+            />
+            </label>
+            <br />
+            <label>
+            Courses:
+            <input type="text" value={courses} onChange={handleCoursesChange} />
+            </label>
+            <br />
+            <button type="submit">Submit</button>
+        </form>
+        </div>
+    );
 }
 
 export default SignupPage;

@@ -10,6 +10,7 @@ import {
 
 import LoginPage from './Login/LoginPage';
 import RootPage, { checkLoggedIn } from './Root/RootPage';
+import SignupPage from './Signup/SignupPage';
 
 function App() {
 
@@ -17,10 +18,11 @@ function App() {
     createRoutesFromElements(
       <Route
       >
-        <Route path="/welcome" element = {<RootPage/>} loader = {checkLoggedIn}
-        />
+        <Route path="/welcome" element = {<RootPage/>} loader = {checkLoggedIn}/>
 
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} loader = {checkLoggedIn}/>
+
+        <Route path="/signup" element={<SignupPage />} loader = {checkLoggedIn}/>
 
         <Route path="*" element={<Navigate to="/welcome" replace />} />
         

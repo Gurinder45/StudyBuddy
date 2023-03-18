@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 
 function LoginPage() {
+  const navigate = useNavigate();
+  const data:any = useLoaderData();
+ 
+  useEffect(() => {
+    if (data.loggedIn) {
+      setTimeout(() => navigate('/welcome'), 0);
+    }
+  }, [data.loggedIn]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -29,7 +36,7 @@ function LoginPage() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <><form onSubmit={handleSubmit}>
       <div>
         <label>
           Username:
@@ -44,6 +51,12 @@ function LoginPage() {
       </div>
       <button type="submit">Login</button>
     </form>
+    <div>
+        <Link to="/signup">
+          <button>Sign Up</button>
+        </Link>
+    </div></>
+    
   );
 }
 
