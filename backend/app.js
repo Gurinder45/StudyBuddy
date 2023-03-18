@@ -9,7 +9,7 @@ const db = require('./db'); // Import the database connection
 var app = express();
 app.use(
   session({
-      name: 'session',
+      name: 'ses',
       secret: 'customer',
       resave:false,
       maxAge: 30*60*1000,
@@ -34,13 +34,13 @@ var options = {
   extensions: ['htm','html','json']
 }
 
-/*
+
 app.use('/',express.static(path.join(__dirname, 'build'),options));
 
 app.get('/*', async function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
-*/
+
 
 
 // catch 404 and forward to error handler

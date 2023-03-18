@@ -16,6 +16,8 @@ router.post('/auth', async function(req, res, next) {
     }
 
     req.session.user = user;
+    console.log(req.session.user)
+
     req.session.regenerate(function(err) {
       if (err) {
         console.log(err)
@@ -25,13 +27,14 @@ router.post('/auth', async function(req, res, next) {
         res.status(200).send('Login successful');
       }
     });
+    
     //res.redirect('/welcome');
   });
   
 });
 
-router.get('/check-logged-in', async function(req, res, next) {
-  console.log(req.session.user)
+router.post('/check-logged-in', async function(req, res, next) {
+  console.log(req.session)
   let loggedIn = false
   if(req.session.user){
     loggedIn = true
