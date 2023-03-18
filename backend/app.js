@@ -21,7 +21,7 @@ app.use(
       resave:false,
       maxAge: 60 * 60 * 24 * 7,
       store: mongoStore,
-      saveUninitialized: true
+      saveUninitialized: false
   })
 )
 

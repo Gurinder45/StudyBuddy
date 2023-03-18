@@ -15,21 +15,21 @@ router.post('/auth', async function(req, res, next) {
       return res.status(401).send('Invalid username or password');
     }
 
-    req.session.user = user;
-    console.log(req.session)
-    console.log(req.sessionID)
-    res.status(200).send('Login successful');
-/*
+    
+
     req.session.regenerate(function(err) {
       if (err) {
         console.log(err)
         res.status(500).send('Session regeneration failed');
       } else {
+        req.session.user = user;
+        console.log(req.session)
+        console.log(req.sessionID)
         // the session has been regenerated, do something with it
         res.status(200).send('Login successful');
       }
     });
-    */
+    
     //res.redirect('/welcome');
   });
   
