@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../user.model');
 
 router.post('/auth', async function(req, res, next) {
+  console.log("heeee")
   const { username, password } = req.body;
   
   User.findOne({ username: username }, function(err, user) {
@@ -18,11 +19,13 @@ router.post('/auth', async function(req, res, next) {
     req.session.regenerate(function(err) {
       if (err) {
         console.log(err)
+        res.status(500).send('Session regeneration failed');
       } else {
         // the session has been regenerated, do something with it
+        res.status(200).send('Login successful');
       }
     });
-    res.redirect('/');
+    //res.redirect('/welcome');
   });
   
 });

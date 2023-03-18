@@ -1,7 +1,14 @@
 // RootPage.tsx
-import React from 'react';
-import { redirect } from "react-router-dom";
+import React, { useEffect } from 'react';
+import {useLoaderData,useNavigate, redirect } from "react-router-dom";
 export default function RootPage() {
+  const navigate = useNavigate();
+  const data:any = useLoaderData();
+  useEffect(() => {
+    if (!data.loggedIn) {
+      setTimeout(() => navigate('/login'), 0);
+    }
+  }, [data.loggedIn]);
   return (
     <div>
       <h2>Welcome</h2>
@@ -11,15 +18,10 @@ export default function RootPage() {
 }
 
 export const checkLoggedIn = async()=> {
-  
-  const response = await fetch('/users/check-logged-in');
-  console.log(response)
-  const data = response.json();
-  
-  /*
+  const response = await fetch('http://localhost:8080/users/check-logged-in');
+  const data = await response.json();
   if(!data.loggedIn){
-    return redirect("/login");
+    redirect('/login')
   }
-*/
-  return null;
+  return data;
 }

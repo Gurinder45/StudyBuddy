@@ -8,7 +8,7 @@ function LoginPage() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const response = await fetch('/users/auth', {
+    const response = await fetch('http://localhost:8080/users/auth', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -16,11 +16,11 @@ function LoginPage() {
       body: JSON.stringify({ username, password })
     });
 
-    console.log(response.ok)
+    console.log(response)
 
     if (response.ok) {
       // Login successful
-      navigate("/")
+      navigate("/welcome")
       console.log('Login successful');
     } else {
       // Login failed

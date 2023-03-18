@@ -4,7 +4,8 @@ import {
   Route,
   createBrowserRouter,
   RouterProvider,
-  createRoutesFromElements
+  createRoutesFromElements,
+  Navigate
 } from "react-router-dom";
 
 import LoginPage from './LoginPage';
@@ -14,16 +15,15 @@ function App() {
 
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path = "/" element = {<RootPage />}>
-        <Route 
-        index 
-        element = {<RootPage/>}
-        loader = {checkLoggedIn}
+      <Route path = "/"
+      >
+        <Route path="/welcome" element = {<RootPage/>} loader = {checkLoggedIn}
         />
 
-        <Route path="login" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
         
       </Route>
+      
     )
   )
 /*
