@@ -8,8 +8,8 @@ import {
   Navigate
 } from "react-router-dom";
 
-import LoginPage from './LoginPage';
-import RootPage, { checkLoggedIn } from './RootPage';
+import LoginPage from './Login/LoginPage';
+import RootPage, { checkLoggedIn } from './Root/RootPage';
 
 function App() {
 
