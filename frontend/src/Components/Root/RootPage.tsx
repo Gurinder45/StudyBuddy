@@ -1,6 +1,7 @@
 // RootPage.tsx
 import React, { useEffect } from 'react';
 import {useLoaderData,useNavigate, redirect } from "react-router-dom";
+import ShowBuddies from '../ShowBuddies/ShowBuddies';
 export default function RootPage() {
   const navigate = useNavigate();
   const data:any = useLoaderData();
@@ -23,12 +24,13 @@ export default function RootPage() {
   }
 
   return (
-    <div>
+    <><div>
       <h2>Welcome</h2>
       <button onClick={logout}>
-          Log Out
+        Log Out
       </button>
     </div>
+    <ShowBuddies /></>
   );
 }
 
