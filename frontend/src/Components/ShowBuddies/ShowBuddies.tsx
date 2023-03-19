@@ -3,61 +3,6 @@ import { useLoaderData, useNavigate } from "react-router-dom";
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 import './ShowBuddies.css';
 import { LatLng } from "use-places-autocomplete";
-/*
-declare global {
-    interface Window {
-      google: any;
-    }
-  }
-  
-  function initMap() {
-    // Create a new map centered on the user's location
-    navigator.geolocation.getCurrentPosition(function (position) {
-      const userLocation = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      };
-      const map = new window.google.maps.Map(document.getElementById("map"), {
-        center: userLocation,
-        zoom: 10
-      });
-      new window.google.maps.Marker({
-        position: userLocation,
-        map: map,
-        title: "You are here!"
-      });
-    });
-  }
-
-  const ShowBuddies: React.FC = () => {
-    const [googleLoaded, setGoogleLoaded] = useState(false);
-  
-    useEffect(() => {
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDNSk4C-ACBV0F0z8yck_KYto3YS_yyZ2Q`;
-      script.async = true;
-      document.body.appendChild(script);
-  
-      script.addEventListener("load", () => {
-        setGoogleLoaded(true);
-      });
-  
-      return () => {
-        script.removeEventListener("load", () => {
-          setGoogleLoaded(true);
-        });
-      };
-    }, []);
-  
-    useEffect(() => {
-      if (googleLoaded) {
-        initMap();
-      }
-    }, [googleLoaded]);
-  
-    return <div id="map" style={{ height: "100%" }}></div>;
-  };
-*/
 
 export default function ShowBuddies(){
    const {isLoaded} = useLoadScript({googleMapsApiKey:'AIzaSyDNSk4C-ACBV0F0z8yck_KYto3YS_yyZ2Q',})
@@ -65,34 +10,86 @@ export default function ShowBuddies(){
    return <Map />;
 }
 
-type UserLocation = {
-    lat: number | null;
-    lng: number | null;
-};
-
 function Map(){
 
-    //const [userLocation, setUserLocation] = useState({ lat: null, lng: null });
-
-    //const [userLocation, setUserLocation]= useState<UserLocation>({ lat: null, lng: null });
     const [latitude, setLatitude] = useState<any>();
     const [longitude, setLongitude] = useState<any>();
 
     useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
-        //const { latitude: lat, longitude: lng } = position.coords;
         console.log(position.coords.longitude)
         console.log(position.coords.latitude)
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
         setLatitude(lat);
         setLongitude(lng);
-        //setUserLocation( {position.coords.latitude, position.coords.longitude});
+/*
+        fetch(`/users/post-loc/${username}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                lat,
+                lng
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to post location data');
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+        */
     });
     }, []);
 
+
+/*
+    const [markers, setMarkers] = useState<any>([{}]);
+    /*
+    const sessionCookie = document.cookie.split('; ').find(cookie => cookie.startsWith('session='));
+    console.log(document.cookie)
+    console.log(sessionCookie)
+    const username = sessionCookie ? sessionCookie.split('=')[1] : null;
+    
+    const username = "sosol"
+    useEffect(() => {
+        fetch(`/users/get-users/${username}`)
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            }
+            throw response;
+          })
+          .then((data) => {
+            const newMarkers = data.map((user:any) => {
+              return {
+                lat: user.location.lat,
+                lng: user.location.lng,
+              };
+            });
+            setMarkers(newMarkers);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }, []);
+
+
+
+    const renderMarkers = () => {
+        return markers.map((marker:any, index:any) => {
+          return <Marker key={index} position={{ lat: marker.lat, lng: marker.lng }} />;
+        });
+    };
+    {renderMarkers()}
+*/
     const loc = useMemo(()=>({lat:latitude, lng:longitude }),[latitude,longitude])
-    return (<GoogleMap zoom = {5} center = {loc} mapContainerClassName = "map-container">
+    return (<GoogleMap zoom = {15} center = {loc} mapContainerClassName = "map-container">
+        
         <Marker position={loc}/>
     </GoogleMap>);
      

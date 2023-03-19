@@ -4,34 +4,37 @@ import './SignupPage.css';
 function SignupPage() {
     const navigate = useNavigate();
     const data:any = useLoaderData();
-    
+    const [users, setUsers] = useState<any>([]);
     useEffect(() => {
         if (data.loggedIn) {
         setTimeout(() => navigate('/welcome'), 0);
         }
+        let usernames: any[] = [];
+        for (let key in data) {
+            if (!isNaN(parseInt(key))) { // Check if the key is a number
+              usernames.push(data[key].username);
+            }
+          }
+        setUsers(usernames);
     }, [data.loggedIn]);
+    
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [university, setUniversity] = useState("");
     const [courses, setCourses] = useState([]);
     const [usernameError, setUsernameError] = useState('');
 
-    const handleUsernameChange = async (event: { target: { value: React.SetStateAction<string>; }; }) => {
+    const handleUsernameChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
         const newUsername = event.target.value;
-        setUsername(newUsername);
         if(newUsername.length >0){
-            try {
-                const response = await fetch(`/users/check-username/${newUsername}`);
-                const data  = await response.json();
-                if (data.exists) {
-                    setUsernameError('Username is already taken.');
-                } else {
-                    setUsernameError('');
-                }
-            } catch (error) {
-                console.error(error);
-                setUsernameError('Error checking username availability.');
-            }
+           if(newUsername == "ssu"){
+            setUsernameError('Username is already taken.');
+           }
+           else{
+            setUsernameError('');
+            setUsername(newUsername);
+           }
+           
         }
         
     };
@@ -107,7 +110,7 @@ function SignupPage() {
                 value={password}
                 onChange={handlePasswordChange}
                 required
-                minLength={8}
+                minLength={4}
             />
             </label>
             {password.length < 4 && (
