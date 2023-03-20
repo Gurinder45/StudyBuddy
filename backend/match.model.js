@@ -10,8 +10,6 @@ var Schema = mongoose.Schema;
 var matchSchema = new Schema({
     userSent: {type: String, required: true},
     userTo: {type: String, required: true},
-    course: {type: String},
-    university: {type: String},
 })
 
 module.exports = mongoose.model("match", matchSchema)

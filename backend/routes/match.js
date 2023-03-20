@@ -66,7 +66,7 @@ router.get('/candidates', async (req, res, next) => {
     }
 
     // Get user's current details
-    const currUser = await User.find(
+    const currUser = await User.findOne(
         { username: req.session.user.username }
     )
 
