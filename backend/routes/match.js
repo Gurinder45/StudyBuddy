@@ -3,8 +3,8 @@ const router = express.Router();
 const User = require('../user.model');
 const Match = require('../match.model');
 
-// Retrieve current user's matches
-router.get('/list', async (req, res, next) => {
+// Retrieve current user's matched buddies
+router.get('/buddies', async (req, res, next) => {
     if (!req.session.user) { // not logged in
         res.sendStatus(401);
     }
@@ -17,6 +17,45 @@ router.get('/list', async (req, res, next) => {
     } else{
         res.sendStatus(400); // shouldn't be possible
     }
+});
+
+// Get list of users that have sent matches to current user and are not buddies
+router.get('/matched', async (req, res, next) => {
+    if (!req.session.user) { // not logged in
+        res.sendStatus(401);
+    }
+    let username = req.session.user.username;
+
+    // Get all users who matched to current user
+    const usersQuery = await Match.find(
+        { userTo: username }
+    );
+    if (usersQuery.length <= 0) {
+        // No one matched with current user
+        res.json(null) // return blank json of no users
+        return;
+    }
+
+    // Get current user's buddies to filter out
+    let buddiesQuery = await User.findOne(
+        { username: username }
+    );
+    let buddies = buddiesQuery.buddies;
+
+    // Filter out users we are already buddies with
+    let matchedUsers = [];
+    usersQuery.forEach((match) => {
+        if (!buddies.includes(match.userSent)) {
+            matchedUsers.push(match.userSent);
+        }
+    });
+
+    // Retrieve profile details of users
+    let result = await User.find(
+        { username: { $in: matchedUsers } },
+        { password: 0 } // DONT REVEAL PASSWORDS
+    );
+    res.json(result);
 });
 
 // Get a list of people who can match with you
