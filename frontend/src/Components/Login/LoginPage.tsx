@@ -37,7 +37,7 @@ function LoginPage() {
   };
 
   return (
-    data.loggedIn?<><form onSubmit={handleSubmit}>
+    <><form onSubmit={handleSubmit}>
       <div>
         <label>
           Username:
@@ -57,7 +57,7 @@ function LoginPage() {
           <button>Sign Up</button>
         </Link>
     </div></>
-    :null
+    
     
   );
 }

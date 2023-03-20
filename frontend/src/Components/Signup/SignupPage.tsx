@@ -85,7 +85,6 @@ function SignupPage() {
     };
 
     return (
-        data.loggedIn?<>
         <div>
         <h2>Signup Page</h2>
         <form onSubmit={handleSubmit}>
@@ -156,8 +155,7 @@ function SignupPage() {
             <button type="submit">Submit</button>
         </form>
         </div>
-        </>
-        :null
+        
     );
 }
 
