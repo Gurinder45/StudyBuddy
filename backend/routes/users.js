@@ -100,9 +100,10 @@ router.get('/logout', function(req, res, next) {
   });
 });
 
-router.get('/get-users/:username', async (req, res) => {
+//-------------------------------------------------
+router.get('/get-users-inoneKm', async (req, res) => {
   try {
-    const username = req.params.username;
+    const username = req.session.user.username;
     const currentUser = await User.findOne({ username: username })
     if (!currentUser) {
       return res.status(404).json({ message: 'User not found' });
@@ -118,25 +119,30 @@ router.get('/get-users/:username', async (req, res) => {
         $near: {
           $geometry: {
             type: 'Point',
-            coordinates: [currentUser.location.lng, currentUser.location.lat]
+            coordinates: [currentUser.location.coordinates[0], currentUser.location.coordinates[1]]
           },
           $maxDistance: 1000 // 1 km
         }
       }
-    })//.populate('matchedbuddies'); <- can use this if need be depending on the implmentation of match buddy
-
+    }).select('username location _id');//.populate('matchedbuddies'); <- can use this if need be depending on the implmentation of match buddy
+    console.log(usersWithinOneKm[0].username)
+    console.log(usersWithinOneKm[0].location.coordinates)
     res.json({usersWithinOneKm });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
 });
+//----------------------------------------
 
-router.post('/post-loc/:username', (req, res) => {
-  const { username } = req.params;
-  const { latitude, longitude } = req.body;
+
+router.post('/post-loc/', (req, res) => {
+  const username = req.session.user.username;
+  const { lat, lng } = req.body;
+  console.log(lat)
+  console.log(lng)
   const filter = { username: username };
-  const update = { $set: { location: { latitude, longitude } } };
+  const update = { $set: { location: { type:"Point", coordinates:[lng,lat] } } };
 
   User.updateOne(filter, update, function(err, result) {
     if (err) {

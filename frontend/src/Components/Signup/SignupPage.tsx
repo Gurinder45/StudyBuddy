@@ -24,18 +24,25 @@ function SignupPage() {
     const [courses, setCourses] = useState([]);
     const [usernameError, setUsernameError] = useState('');
 
-    const handleUsernameChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+    const handleUsernameChange = async (event: { target: { value: React.SetStateAction<string>; }; }) => {
         const newUsername = event.target.value;
+        setUsername(newUsername);
         if(newUsername.length >0){
-           if(newUsername == "ssu"){
-            setUsernameError('Username is already taken.');
-           }
-           else{
-            setUsernameError('');
-            setUsername(newUsername);
-           }
+            for(let i =0;i<users.length;i++){
+                if(newUsername == users[i]){
+                    setUsernameError('Username is already taken.');
+                    setUsername('');
+                    break
+                }
+            
+                else{
+                    setUsernameError('');
+                   
+                }
+            }
            
         }
+        
         
     };
 
@@ -78,6 +85,7 @@ function SignupPage() {
     };
 
     return (
+        data.loggedIn?<>
         <div>
         <h2>Signup Page</h2>
         <form onSubmit={handleSubmit}>
@@ -96,7 +104,7 @@ function SignupPage() {
                 Username must be at least 3 characters long
             </p>
             )}
-            {username.length === 0 &&usernameError && (
+            {usernameError && (
             <p style={{ color: 'red' }}>
                 {usernameError}
             </p>
@@ -148,7 +156,8 @@ function SignupPage() {
             <button type="submit">Submit</button>
         </form>
         </div>
-
+        </>
+        :null
     );
 }
 

@@ -24,13 +24,16 @@ export default function RootPage() {
   }
 
   return (
+    data.loggedIn?
     <><div>
       <h2>Welcome</h2>
       <button onClick={logout}>
         Log Out
       </button>
     </div>
-    <ShowBuddies /></>
+    <ShowBuddies />
+    </>
+    :null
   );
 }
 

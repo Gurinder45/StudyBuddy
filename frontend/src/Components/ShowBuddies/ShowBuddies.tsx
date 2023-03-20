@@ -14,7 +14,7 @@ function Map(){
 
     const [latitude, setLatitude] = useState<any>();
     const [longitude, setLongitude] = useState<any>();
-
+    const [markers, setMarkers] = useState<any>([{}]);
     useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
         console.log(position.coords.longitude)
@@ -23,8 +23,8 @@ function Map(){
         const lng = position.coords.longitude;
         setLatitude(lat);
         setLongitude(lng);
-/*
-        fetch(`/users/post-loc/${username}`, {
+      
+        fetch(`/users/post-loc`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -42,22 +42,9 @@ function Map(){
         .catch(error => {
             console.error(error);
         });
-        */
-    });
-    }, []);
 
 
-/*
-    const [markers, setMarkers] = useState<any>([{}]);
-    /*
-    const sessionCookie = document.cookie.split('; ').find(cookie => cookie.startsWith('session='));
-    console.log(document.cookie)
-    console.log(sessionCookie)
-    const username = sessionCookie ? sessionCookie.split('=')[1] : null;
-    
-    const username = "sosol"
-    useEffect(() => {
-        fetch(`/users/get-users/${username}`)
+        fetch(`/users/get-users-inoneKm`)
           .then((response) => {
             if (response.ok) {
               return response.json();
@@ -65,31 +52,46 @@ function Map(){
             throw response;
           })
           .then((data) => {
-            const newMarkers = data.map((user:any) => {
+            const usersWithinOneKm = data.usersWithinOneKm;
+            const newMarkers = usersWithinOneKm.map((user:any) => {
               return {
-                lat: user.location.lat,
-                lng: user.location.lng,
+                lat: user.location.coordinates[1],
+                lng: user.location.coordinates[0]
               };
             });
+            console.log(newMarkers)
             setMarkers(newMarkers);
           })
           .catch((error) => {
             console.log(error);
           });
-      }, []);
+        
+    });
+    }, []);
 
 
+
+    console.log(document.cookie)
+    
+    /*
+    const sessionCookie = document.cookie.split('; ').find(cookie => cookie.startsWith('session='));
+    console.log(document.cookie)
+    console.log(sessionCookie)
+    const username = sessionCookie ? sessionCookie.split('=')[1] : null;
+    
+    */
 
     const renderMarkers = () => {
         return markers.map((marker:any, index:any) => {
           return <Marker key={index} position={{ lat: marker.lat, lng: marker.lng }} />;
         });
     };
-    {renderMarkers()}
-*/
+    
+    
+
     const loc = useMemo(()=>({lat:latitude, lng:longitude }),[latitude,longitude])
     return (<GoogleMap zoom = {15} center = {loc} mapContainerClassName = "map-container">
-        
+        {renderMarkers()}
         <Marker position={loc}/>
     </GoogleMap>);
      
