@@ -4,12 +4,20 @@ import './SignupPage.css';
 function SignupPage() {
     const navigate = useNavigate();
     const data:any = useLoaderData();
-    
+    const [users, setUsers] = useState<any>([]);
     useEffect(() => {
         if (data.loggedIn) {
         setTimeout(() => navigate('/welcome'), 0);
         }
+        let usernames: any[] = [];
+        for (let key in data) {
+            if (!isNaN(parseInt(key))) { // Check if the key is a number
+              usernames.push(data[key].username);
+            }
+          }
+        setUsers(usernames);
     }, [data.loggedIn]);
+    
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [university, setUniversity] = useState("");
@@ -20,19 +28,21 @@ function SignupPage() {
         const newUsername = event.target.value;
         setUsername(newUsername);
         if(newUsername.length >0){
-            try {
-                const response = await fetch(`/users/check-username/${newUsername}`);
-                const data  = await response.json();
-                if (data.exists) {
+            for(let i =0;i<users.length;i++){
+                if(newUsername == users[i]){
                     setUsernameError('Username is already taken.');
-                } else {
-                    setUsernameError('');
+                    setUsername('');
+                    break
                 }
-            } catch (error) {
-                console.error(error);
-                setUsernameError('Error checking username availability.');
+            
+                else{
+                    setUsernameError('');
+                   
+                }
             }
+           
         }
+        
         
     };
 
@@ -75,6 +85,7 @@ function SignupPage() {
     };
 
     return (
+        data.loggedIn?<>
         <div>
         <h2>Signup Page</h2>
         <form onSubmit={handleSubmit}>
@@ -93,7 +104,7 @@ function SignupPage() {
                 Username must be at least 3 characters long
             </p>
             )}
-            {username.length === 0 &&usernameError && (
+            {usernameError && (
             <p style={{ color: 'red' }}>
                 {usernameError}
             </p>
@@ -107,7 +118,7 @@ function SignupPage() {
                 value={password}
                 onChange={handlePasswordChange}
                 required
-                minLength={8}
+                minLength={4}
             />
             </label>
             {password.length < 4 && (
@@ -145,7 +156,8 @@ function SignupPage() {
             <button type="submit">Submit</button>
         </form>
         </div>
-
+        </>
+        :null
     );
 }
 

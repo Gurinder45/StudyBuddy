@@ -7,6 +7,21 @@ var userSchema = new Schema({
     password: {type:String, minlength: 2, required:true},
     university:{type: String, required:true},
     courses: {type: [String], required:true},
+    
+    location: {
+        type: {
+          type: String, // Don't do `{ location: { type: String } }`
+          enum: ['Point'], // 'location.type' must be 'Point'
+          required: false
+        },
+        coordinates: {
+          type: [Number],
+          required: false
+        },
+        required: false
+    },
+    
+    //matchedbuddies: [{ type: [Schema.Types.ObjectId], ref: 'User',required: false }]//reference to other users
 })
 
 module.exports = mongoose.model("user", userSchema)
