@@ -31,7 +31,6 @@ function SignupPage() {
             for(let i =0;i<users.length;i++){
                 if(newUsername == users[i]){
                     setUsernameError('Username is already taken.');
-                    setUsername('');
                     break
                 }
             
@@ -43,45 +42,62 @@ function SignupPage() {
            
         }
         
-        
     };
 
     const handlePasswordChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        if(usernameError == "Username is already taken."){
+            setUsername('');
+        }
         setPassword(event.target.value);
     };
 
     const handleUniversityChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        if(usernameError == "Username is already taken."){
+            setUsername('');
+        }
         setUniversity(event.target.value);
     };
 
     const handleCoursesChange = (event:any) => {
+        if(usernameError == "Username is already taken."){
+            setUsername('');
+        }
         setCourses(event.target.value.split(','));
     };
 
     const handleSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
-        const response = await fetch("/users/signup", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            username,
-            password,
-            university,
-            courses,
-        }),
-        });
-
-        if (response.ok) {
-            // Login successful
-            navigate("/welcome")
-            console.log('Signup successful');
-        } 
-        else {
-            // Login failed
-            console.log('Signup failed');
+        if(username =='' || password =='' || university =='' || courses.length ==0){
+            setUsername('')
+            setPassword('')
+            setUniversity('')
+            setCourses([])
         }
+        else{
+            const response = await fetch("/users/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username,
+                    password,
+                    university,
+                    courses,
+                }),
+                });
+        
+                if (response.ok) {
+                    // Login successful
+                    navigate("/welcome")
+                    console.log('Signup successful');
+                } 
+                else {
+                    // Login failed
+                    console.log('Signup failed');
+                }
+        }
+        
     };
 
     return (
