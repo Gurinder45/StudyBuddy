@@ -1,7 +1,12 @@
 // RootPage.tsx
 import React, { useEffect } from 'react';
 import {useLoaderData,useNavigate, redirect } from "react-router-dom";
+import BuddiesList from '../Matching/BuddiesList';
+import { MatchContextProvider } from '../Matching/MatchContext';
+import MatchUsersList from '../Matching/MatchUsersList';
 import ShowBuddies from '../ShowBuddies/ShowBuddies';
+
+
 export default function RootPage() {
   const navigate = useNavigate();
   const data:any = useLoaderData();
@@ -25,19 +30,24 @@ export default function RootPage() {
 
 
   return (
-    data.loggedIn?
-    <><div>
-      <h2>Welcome</h2>
-      <button onClick={logout}>
-        Log Out
-      </button>
+    data.loggedIn ?
+    <>
+      <div>
+        <h2>Welcome</h2>
+        <button onClick={logout}>
+          Log Out
+        </button>
       <button onClick={() => setTimeout(() => navigate('/profile'), 0)}>
         Edit Profile
       </button>
-    </div>
-    <ShowBuddies />
+      </div>
+      <MatchContextProvider>
+        <ShowBuddies />
+        <BuddiesList />
+        <MatchUsersList />
+      </MatchContextProvider>
     </>
-    :null
+    : null
   );
 }
 
