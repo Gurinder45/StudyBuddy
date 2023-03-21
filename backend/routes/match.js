@@ -76,6 +76,24 @@ router.get('/candidates', async (req, res, next) => {
     // Filter out users that have already been matched with
 })
 
+// Get a list of people who can match with you
+// Debug endpoint that just returns everyone who isnt a buddy
+router.get('/candidates/debug', async (req, res, next) => {
+    if (!req.session.user) { // not logged in
+        res.sendStatus(401);
+    }
+
+    // Get user's current details
+    const currUser = await User.findOne(
+        { username: req.session.user.username }
+    )
+
+    // Get list of users that match based on similar fields
+    
+
+    // Filter out users that have already been matched with
+})
+
 // Matches a user to another user
 router.post('/match', async (req, res, next) => {
     if (!req.session.user) { // not logged in
