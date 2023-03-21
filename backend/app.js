@@ -16,7 +16,7 @@ const mongoStore = MongoStore.create({
 var app = express();
 app.use(
   session({
-      name: 'ses',
+      name: 'session',
       secret: 'customer',
       resave:false,
       maxAge: 60 * 60 * 24 * 7,

@@ -4,12 +4,20 @@ import './SignupPage.css';
 function SignupPage() {
     const navigate = useNavigate();
     const data:any = useLoaderData();
-    
+    const [users, setUsers] = useState<any>([]);
     useEffect(() => {
         if (data.loggedIn) {
         setTimeout(() => navigate('/welcome'), 0);
         }
+        let usernames: any[] = [];
+        for (let key in data) {
+            if (!isNaN(parseInt(key))) { // Check if the key is a number
+              usernames.push(data[key].username);
+            }
+          }
+        setUsers(usernames);
     }, [data.loggedIn]);
+    
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [university, setUniversity] = useState("");
@@ -20,58 +28,76 @@ function SignupPage() {
         const newUsername = event.target.value;
         setUsername(newUsername);
         if(newUsername.length >0){
-            try {
-                const response = await fetch(`/users/check-username/${newUsername}`);
-                const data  = await response.json();
-                if (data.exists) {
+            for(let i =0;i<users.length;i++){
+                if(newUsername == users[i]){
                     setUsernameError('Username is already taken.');
-                } else {
-                    setUsernameError('');
+                    break
                 }
-            } catch (error) {
-                console.error(error);
-                setUsernameError('Error checking username availability.');
+            
+                else{
+                    setUsernameError('');
+                   
+                }
             }
+           
         }
         
     };
 
     const handlePasswordChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        if(usernameError == "Username is already taken."){
+            setUsername('');
+        }
         setPassword(event.target.value);
     };
 
     const handleUniversityChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        if(usernameError == "Username is already taken."){
+            setUsername('');
+        }
         setUniversity(event.target.value);
     };
 
     const handleCoursesChange = (event:any) => {
+        if(usernameError == "Username is already taken."){
+            setUsername('');
+        }
         setCourses(event.target.value.split(','));
     };
 
     const handleSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
-        const response = await fetch("/users/signup", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            username,
-            password,
-            university,
-            courses,
-        }),
-        });
-
-        if (response.ok) {
-            // Login successful
-            navigate("/welcome")
-            console.log('Signup successful');
-        } 
-        else {
-            // Login failed
-            console.log('Signup failed');
+        if(username =='' || password =='' || university =='' || courses.length ==0){
+            setUsername('')
+            setPassword('')
+            setUniversity('')
+            setCourses([])
         }
+        else{
+            const response = await fetch("/users/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username,
+                    password,
+                    university,
+                    courses,
+                }),
+                });
+        
+                if (response.ok) {
+                    // Login successful
+                    navigate("/welcome")
+                    console.log('Signup successful');
+                } 
+                else {
+                    // Login failed
+                    console.log('Signup failed');
+                }
+        }
+        
     };
 
     return (
@@ -93,7 +119,7 @@ function SignupPage() {
                 Username must be at least 3 characters long
             </p>
             )}
-            {username.length === 0 &&usernameError && (
+            {usernameError && (
             <p style={{ color: 'red' }}>
                 {usernameError}
             </p>
@@ -107,7 +133,7 @@ function SignupPage() {
                 value={password}
                 onChange={handlePasswordChange}
                 required
-                minLength={8}
+                minLength={4}
             />
             </label>
             {password.length < 4 && (
@@ -145,7 +171,7 @@ function SignupPage() {
             <button type="submit">Submit</button>
         </form>
         </div>
-
+        
     );
 }
 

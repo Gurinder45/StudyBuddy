@@ -42,6 +42,10 @@ export default function RootPage() {
 
 export const checkLoggedIn = async()=> {
   const response = await fetch('/users/check-logged-in');
-  const data = await response.json();
-  return data;
+  const data = await response.json(); 
+  const response1 = await fetch('/users/get-users')
+  const data1 = await response1.json();
+  const mergedObject = { ...data, ...data1};
+  console.log(mergedObject)
+  return mergedObject;
 }

@@ -24,7 +24,7 @@ function App() {
 
         <Route path="/signup" element={<SignupPage />} loader = {checkLoggedIn}/>
 
-        <Route path="*" element={<Navigate to="/welcome" replace />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
         
       </Route>
       

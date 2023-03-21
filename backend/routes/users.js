@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../user.model');
+const geolib = require('geolib');
 
 router.post('/auth', async function(req, res, next) {
-  console.log("heeee")
+  
   const { username, password } = req.body;
   
   User.findOne({ username: username, password: password }, function(err, user) {
@@ -65,14 +66,14 @@ router.post('/signup', async function(req,res,next){
   }
 })
 
-router.get('/check-username/:username', async (req, res) => {
-  const username = req.params.username;
-  // Check if username exists in database
-  const user = await User.findOne({ username: username });
-  if (user) {
-    res.json({ exists: true });
-  } else {
-    res.json({ exists: false });
+router.get('/get-users', async (req, res) => {
+  try {
+    const users = await User.find();
+   
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error retrieving users' });
   }
 });
 
@@ -97,6 +98,65 @@ router.get('/logout', function(req, res, next) {
 
     res.json({ loggedOut });
   });
+});
+
+//-------------------------------------------------
+router.get('/get-users-inoneKm', async (req, res) => {
+  try {
+    const username = req.session.user.username;
+    const currentUser = await User.findOne({ username: username })
+    if (!currentUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    if (!currentUser.location) {
+      return res.status(400).json({ message: 'User location not available' });
+    }
+
+    // Find all users within a km radius
+    const usersWithinOneKm = await User.find({
+      username: { $ne: username }, // Exclude current user
+      location: { // Only consider users with location available
+        $near: {
+          $geometry: {
+            type: 'Point',
+            coordinates: [currentUser.location.coordinates[0], currentUser.location.coordinates[1]]
+          },
+          $maxDistance: 1000 // 1 km
+        }
+      }
+    }).select('username location _id');//.populate('matchedbuddies'); <- can use this if need be depending on the implmentation of match buddy
+    console.log(usersWithinOneKm[0].username)
+    console.log(usersWithinOneKm[0].location.coordinates)
+    res.json({usersWithinOneKm });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+//----------------------------------------
+
+
+router.post('/post-loc/', (req, res) => {
+  const username = req.session.user.username;
+  const { lat, lng } = req.body;
+  console.log(lat)
+  console.log(lng)
+  const filter = { username: username };
+  const update = { $set: { location: { type:"Point", coordinates:[lng,lat] } } };
+
+  User.updateOne(filter, update, function(err, result) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    console.log('Updated the location');
+    console.log(result);
+  });
+  // Do something with the latitude and longitude data
+  // For example, you could save it to a database associated with the user
+
+  res.sendStatus(200);
 });
 
 

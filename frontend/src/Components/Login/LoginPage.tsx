@@ -43,22 +43,12 @@ function LoginPage() {
           Username:
           <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
         </label>
-        {username.length < 3 && (
-            <p style={{ color: 'red' }}>
-                Username must be at least 3 characters long
-            </p>
-          )}
       </div>
       <div>
         <label>
           Password:
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
         </label>
-        {username.length < 4 && (
-            <p style={{ color: 'red' }}>
-                Password must be at least 4 characters long
-            </p>
-          )}
       </div>
       <button type="submit">Login</button>
     </form>
@@ -67,6 +57,7 @@ function LoginPage() {
           <button>Sign Up</button>
         </Link>
     </div></>
+    
     
   );
 }
