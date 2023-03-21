@@ -9,14 +9,19 @@ router.get('/buddies', async (req, res, next) => {
         res.sendStatus(401);
     }
 
-    const result = await User.findOne(
+    // Get current user info
+    const currUser = await User.findOne(
         { username: req.session.user.username }
     );
-    if (result.length > 0) {
-        res.json(result.buddies); // list of all buddies
-    } else{
-        res.sendStatus(400); // shouldn't be possible
-    }
+    
+    
+    // Get list of users that are the current user's buddies
+    const buddies = await User.find(
+        { username: { $in: currUser.buddies } },
+        { password: 0 } // hide password
+    )
+    
+    res.json(buddies);
 });
 
 // Get list of users that have sent matches to current user and are not buddies
@@ -59,7 +64,6 @@ router.get('/matched', async (req, res, next) => {
 });
 
 // Get a list of people who can match with you
-// This will likely require a better algorithm later on
 router.get('/candidates', async (req, res, next) => {
     if (!req.session.user) { // not logged in
         res.sendStatus(401);
@@ -70,28 +74,24 @@ router.get('/candidates', async (req, res, next) => {
         { username: req.session.user.username }
     )
 
-    // Get list of users that match based on similar fields
-    
-
-    // Filter out users that have already been matched with
-})
-
-// Get a list of people who can match with you
-// Debug endpoint that just returns everyone who isnt a buddy
-router.get('/candidates/debug', async (req, res, next) => {
-    if (!req.session.user) { // not logged in
-        res.sendStatus(401);
-    }
-
-    // Get user's current details
-    const currUser = await User.findOne(
-        { username: req.session.user.username }
+    // Get list of users that current user has sent match requests to
+    const matchesSent = await Match.find(
+        { userSent: currUser.username }
     )
 
-    // Get list of users that match based on similar fields
-    
+    // Add users that user has already sent requests to to filter
+    const filterOut = currUser.buddies;
+    matchesSent.forEach((match) => {
+        filterOut.push(match.userTo);
+    })
 
-    // Filter out users that have already been matched with
+    // Get list of users that match based on similar fields
+    const candidates = await User.find(
+        { username: { $nin: filterOut, $ne: currUser.username } },
+        { password: 0 }
+    )
+    
+    res.json(candidates);
 })
 
 // Matches a user to another user
@@ -152,6 +152,62 @@ router.post('/match', async (req, res, next) => {
     }
 
     res.sendStatus(200); // everything went well
+})
+
+// Deletes a match between two users
+router.delete('/unmatch', async (req, res, next) => {
+    if (!req.session.user) { // not logged in
+        res.sendStatus(401);
+        return;
+    }
+    const deleteUsername = req.body.username;
+    const currUsername = req.session.user.username;
+
+    // Get current user info
+    const currUser = await User.findOne(
+        { username: req.session.user.username }
+    );
+
+    // Delete from buddies if they are a buddy
+    if (currUser.buddies.includes(deleteUsername)) {
+        // Remove from each other's buddies lists
+        await User.updateOne(
+            { username: currUsername },
+            { $pull: { buddies: deleteUsername } },
+        ).catch((e) => {
+            console.log(e);
+            res.sendStatus(500); // server error
+            return;
+        })
+        await User.updateOne(
+            { username: deleteUsername },
+            { $pull: { buddies: currUsername } },
+        ).catch((e) => {
+            console.log(e);
+            res.sendStatus(500); // server error
+            return;
+        })
+    }
+
+    // Remove match records
+    await Match.deleteOne({
+        userSent: currUsername,
+        userTo: deleteUsername
+    }).catch((e) => {
+        console.log(e);
+        res.sendStatus(500);
+        return;
+    })
+    await Match.deleteOne({
+        userSent: deleteUsername,
+        userTo: currUsername
+    }).catch((e) => {
+        console.log(e);
+        res.sendStatus(500);
+        return;
+    })
+
+    res.sendStatus(200); // all good!
 })
 
 module.exports = router;

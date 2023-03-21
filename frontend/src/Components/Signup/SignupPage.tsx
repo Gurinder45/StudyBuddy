@@ -29,7 +29,7 @@ function SignupPage() {
         setUsername(newUsername);
         if(newUsername.length >0){
             for(let i =0;i<users.length;i++){
-                if(newUsername == users[i]){
+                if(newUsername === users[i]){
                     setUsernameError('Username is already taken.');
                     break
                 }
@@ -45,21 +45,21 @@ function SignupPage() {
     };
 
     const handlePasswordChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-        if(usernameError == "Username is already taken."){
+        if(usernameError === "Username is already taken."){
             setUsername('');
         }
         setPassword(event.target.value);
     };
 
     const handleUniversityChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-        if(usernameError == "Username is already taken."){
+        if(usernameError === "Username is already taken."){
             setUsername('');
         }
         setUniversity(event.target.value);
     };
 
     const handleCoursesChange = (event:any) => {
-        if(usernameError == "Username is already taken."){
+        if(usernameError === "Username is already taken."){
             setUsername('');
         }
         setCourses(event.target.value.split(','));
@@ -67,7 +67,7 @@ function SignupPage() {
 
     const handleSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
-        if(username =='' || password =='' || university =='' || courses.length ==0){
+        if(username === '' || password === '' || university === '' || courses.length === 0){
             setUsername('')
             setPassword('')
             setUniversity('')

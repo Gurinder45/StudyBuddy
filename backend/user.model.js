@@ -7,7 +7,7 @@ var userSchema = new Schema({
     password: {type:String, minlength: 2, required:true},
     university:{type: String, required:true},
     courses: {type: [String], required:true},
-    buddies: {type: [String]}
+    buddies: {type: [String]},
     
     location: {
         type: {

@@ -1,8 +1,12 @@
 // RootPage.tsx
 import React, { useEffect } from 'react';
 import {useLoaderData,useNavigate, redirect } from "react-router-dom";
-import MatchUsersList from '../MatchUsers/MatchUsersList';
+import BuddiesList from '../Matching/BuddiesList';
+import { MatchContextProvider } from '../Matching/MatchContext';
+import MatchUsersList from '../Matching/MatchUsersList';
 import ShowBuddies from '../ShowBuddies/ShowBuddies';
+
+
 export default function RootPage() {
   const navigate = useNavigate();
   const data:any = useLoaderData();
@@ -33,8 +37,11 @@ export default function RootPage() {
           Log Out
         </button>
       </div>
-      <ShowBuddies />
-      <MatchUsersList />
+      <MatchContextProvider>
+        <ShowBuddies />
+        <BuddiesList />
+        <MatchUsersList />
+      </MatchContextProvider>
     </>
     : null
   );
