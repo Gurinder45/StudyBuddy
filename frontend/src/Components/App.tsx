@@ -11,6 +11,7 @@ import {
 import LoginPage from './Login/LoginPage';
 import RootPage, { checkLoggedIn } from './Root/RootPage';
 import SignupPage from './Signup/SignupPage';
+import EditProfile from './EditProfile/EditProfile';
 
 function App() {
 
@@ -23,6 +24,8 @@ function App() {
         <Route path="/login" element={<LoginPage />} loader = {checkLoggedIn}/>
 
         <Route path="/signup" element={<SignupPage />} loader = {checkLoggedIn}/>
+
+        <Route path="/profile" element={<EditProfile />} loader = {checkLoggedIn}/>
 
         <Route path="*" element={<Navigate to="/login" replace />} />
         

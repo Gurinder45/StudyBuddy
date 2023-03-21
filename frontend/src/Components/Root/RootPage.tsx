@@ -20,8 +20,9 @@ export default function RootPage() {
     if(data.loggedOut){
       setTimeout(() => navigate('/login'), 0);
     }
-
   }
+
+
 
   return (
     data.loggedIn?
@@ -29,6 +30,9 @@ export default function RootPage() {
       <h2>Welcome</h2>
       <button onClick={logout}>
         Log Out
+      </button>
+      <button onClick={() => setTimeout(() => navigate('/profile'), 0)}>
+        Edit Profile
       </button>
     </div>
     <ShowBuddies />
