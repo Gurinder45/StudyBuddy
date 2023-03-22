@@ -111,6 +111,7 @@ router.get("/get-users-inoneKm", async (req, res) => {
 
     // Find all users within a km radius
     const usersWithinOneKm = await User.find({
+
       username: { $ne: username }, // Exclude current user
       location: {
         // Only consider users with location available
@@ -126,8 +127,13 @@ router.get("/get-users-inoneKm", async (req, res) => {
         },
       },
     }).select("username location _id"); //.populate('matchedbuddies'); <- can use this if need be depending on the implmentation of match buddy
-    console.log(usersWithinOneKm[0].username);
-    console.log(usersWithinOneKm[0].location.coordinates);
+    
+    for(let i =0; i<usersWithinOneKm.length;i++){
+      console.log(usersWithinOneKm[i].username);
+      console.log(usersWithinOneKm[i].location.coordinates);
+    }
+    
+    console.log("from server")
     res.json({ usersWithinOneKm });
   } catch (err) {
     console.error(err);

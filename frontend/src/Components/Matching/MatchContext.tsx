@@ -59,6 +59,7 @@ const MatchContextProvider = ({ children }: MatchContextProviderProps) => {
         <MatchContext.Provider value={{ 
             candidates, 
             buddies,
+            
             updateContext }}>
             {children}
         </MatchContext.Provider>
