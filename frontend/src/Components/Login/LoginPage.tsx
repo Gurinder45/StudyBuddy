@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { Button, ButtonGroup, Col, Container, Form, FormGroup, Row, Stack } from 'react-bootstrap';
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
+import RootNavbar from '../Root/RootNavbar';
 import './LoginPage.css';
 
 function LoginPage() {
@@ -37,26 +39,31 @@ function LoginPage() {
   };
 
   return (
-    <><form onSubmit={handleSubmit}>
-      <div>
-        <label>
-          Username:
-          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-        </label>
-      </div>
-      <div>
-        <label>
-          Password:
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        </label>
-      </div>
-      <button type="submit">Login</button>
-    </form>
-    <div>
-        <Link to="/signup">
-          <button>Sign Up</button>
-        </Link>
-    </div></>
+    <>
+    <RootNavbar> </RootNavbar>
+    <Container>
+      <Row>
+        <Col sm={2} md={3} lg={4}></Col>
+        <Col sm={8} md={6} lg={4}>
+        <Form onSubmit={handleSubmit}>
+          <FormGroup className='mb-3' controlId='formUsername'>
+            <Form.Label>Username:</Form.Label>
+            <Form.Control type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+          </FormGroup>
+          <FormGroup className='mb-3' controlId='formPassword'>
+            <Form.Label>Password:</Form.Label>
+            <Form.Control type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          </FormGroup>
+          <div className="d-flex justify-content-evenly">
+            <Button onClick={() => {navigate('/signup')}} variant='primary'>Sign Up</Button>
+            <Button variant='primary' type="submit">Login</Button>
+          </div>
+        </Form>
+        </Col>
+        <Col sm={2} md={3} lg={4}></Col>
+      </Row>
+    </Container>
+    </>
     
     
   );
