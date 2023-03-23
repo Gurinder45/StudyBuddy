@@ -10,6 +10,7 @@ export default function ShowBuddies(){
    return <Map />;
 }
 
+
 function Map(){
 
     const [latitude, setLatitude] = useState<any>();
@@ -56,9 +57,13 @@ function Map(){
             const newMarkers = usersWithinOneKm.map((user:any) => {
               return {
                 lat: user.location.coordinates[1],
-                lng: user.location.coordinates[0]
+                lng: user.location.coordinates[0],
+                username: user.username
               };
-            });
+            },
+            );
+             
+            
             console.log(newMarkers)
             setMarkers(newMarkers);
           })
@@ -70,8 +75,6 @@ function Map(){
     }, []);
 
 
-
-    console.log(document.cookie)
     
     /*
     const sessionCookie = document.cookie.split('; ').find(cookie => cookie.startsWith('session='));
@@ -83,7 +86,7 @@ function Map(){
 
     const renderMarkers = () => {
         return markers.map((marker:any, index:any) => {
-          return <Marker key={index} position={{ lat: marker.lat, lng: marker.lng }} />;
+          return <Marker key={index} position={{ lat: marker.lat, lng: marker.lng }} title = {marker.username}/>;
         });
     };
     
@@ -92,7 +95,7 @@ function Map(){
     const loc = useMemo(()=>({lat:latitude, lng:longitude }),[latitude,longitude])
     return (<GoogleMap zoom = {15} center = {loc} mapContainerClassName = "map-container">
         {renderMarkers()}
-        <Marker position={loc}/>
+        <Marker position={loc} title = "you" />
     </GoogleMap>);
      
 }
