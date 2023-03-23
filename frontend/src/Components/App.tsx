@@ -12,6 +12,7 @@ import LoginPage from './Login/LoginPage';
 import RootPage, { checkLoggedIn } from './Root/RootPage';
 import SignupPage from './Signup/SignupPage';
 import EditProfile from './EditProfile/EditProfile';
+import { Spinner } from 'react-bootstrap';
 
 function App() {
 
@@ -27,7 +28,14 @@ function App() {
 
         <Route path="/profile" element={<EditProfile />} loader = {checkLoggedIn}/>
 
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={
+          <>
+            <div className='d-flex justify-content-center align-items-center my-auto vh-100'>
+              <Spinner animation="border" variant='primary' style={{ width:'100px', height:'100px' }} />
+            </div>
+            <Navigate to="/welcome" replace />
+          </>} 
+        />
         
       </Route>
       

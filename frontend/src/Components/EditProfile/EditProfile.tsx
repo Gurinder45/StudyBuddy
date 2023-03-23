@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { Button, Col, Container, Form, FormGroup, Row } from "react-bootstrap";
 import { useLoaderData, useNavigate } from "react-router-dom";
+import RootNavbar from "../Root/RootNavbar";
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -48,37 +50,43 @@ const EditProfile = () => {
     if(data) {
         alert(
             `University set to: ${data.university} \nCourses set to ${data.courses}`)
+        navigate('/welcome')
     }
   };
 
   return data.loggedIn ? (
     <>
-    <h2>Edit Profile</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          University:
-          <input
-            type="text"
-            required
-            value={university || ""}
-            onChange={(e) => setUniversity(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Courses (comma-separated):
-          <input
-            type="text"
-            required
-            value={courses || ""}
-            onChange={(e) => setCourses(e.target.value)}
-          />
-        </label>
-        <button type="submit">Submit</button>
-      </form>
+    <RootNavbar loggedIn={data.loggedIn} />
+    <Container>
+      <Row>
+        <Col sm={2} md={3} lg={4}></Col>
+        <Col sm={8} md={6} lg={4}>
+        <h2>Edit Profile</h2>
+        <Form onSubmit={handleSubmit}>
+          <FormGroup className='mb-3' controlId='formUniversity'>
+            <Form.Label>University:</Form.Label>
+            <Form.Control type="text"
+              required
+              value={university || ""}
+              onChange={(e) => setUniversity(e.target.value)} />
+          </FormGroup>
+          <FormGroup className='mb-3' controlId='formCourses'>
+            <Form.Label>Courses (comma-separated):</Form.Label>
+            <Form.Control type="text"
+              required
+              value={courses || ""}
+              onChange={(e) => setCourses(e.target.value)} />
+          </FormGroup>
+          <div className="d-flex justify-content-evenly">
+            <Button variant='primary' type="submit">Submit</Button>
+          </div>
+        </Form>
+        </Col>
+        <Col sm={2} md={3} lg={4}></Col>
+      </Row>
+    </Container>
     </>
   ) : null;
 };
 
 export default EditProfile;
-export {};

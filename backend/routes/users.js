@@ -41,6 +41,10 @@ router.post("/signup", async function (req, res, next) {
     password: password,
     university: university,
     courses: courses,
+    location: {
+      type: 'Point',
+      coordinates: [0, 0] // default coordinates
+    }
   });
 
   // save the new user to the database
@@ -79,11 +83,13 @@ router.get("/check-logged-in", async function (req, res, next) {
   console.log(req.session);
   console.log(req.sessionID);
   let loggedIn = false;
+  let username = '';
   if (req.session.user) {
     loggedIn = true;
+    username = req.session.user.username;
   }
 
-  res.json({ loggedIn });
+  res.json({ loggedIn, username });
 });
 
 router.get("/logout", function (req, res, next) {

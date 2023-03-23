@@ -1,10 +1,12 @@
 // RootPage.tsx
 import React, { useEffect } from 'react';
+import { Button, Col, Container, Nav, Navbar, Row, Spinner } from 'react-bootstrap';
 import {useLoaderData,useNavigate, redirect } from "react-router-dom";
 import BuddiesList from '../Matching/BuddiesList';
 import { MatchContextProvider } from '../Matching/MatchContext';
 import MatchUsersList from '../Matching/MatchUsersList';
 import ShowBuddies from '../ShowBuddies/ShowBuddies';
+import RootNavbar from './RootNavbar';
 
 
 export default function RootPage() {
@@ -17,37 +19,30 @@ export default function RootPage() {
     }
   }, [data.loggedIn]);
 
-  const logout = async (event: any)=>{
-    event.preventDefault();
-
-    const response = await fetch('/users/logout');
-    const data = await response.json();
-    if(data.loggedOut){
-      setTimeout(() => navigate('/login'), 0);
-    }
-  }
-
 
 
   return (
     data.loggedIn ?
     <>
-      <div>
-        <h2>Welcome</h2>
-        <button onClick={logout}>
-          Log Out
-        </button>
-      <button onClick={() => setTimeout(() => navigate('/profile'), 0)}>
-        Edit Profile
-      </button>
-      </div>
       <MatchContextProvider>
-        <ShowBuddies />
-        <BuddiesList />
-        <MatchUsersList />
+        <RootNavbar loggedIn={data.loggedIn} />
+        <Container>
+          <Row>
+            <Col sm={0} md={1}></Col>
+            <Col sm={12} md={10}>
+              <h2 className='mb-2'>Welcome, {data.username}</h2>
+              <ShowBuddies />
+              <BuddiesList />
+              <MatchUsersList />
+            </Col>
+            <Col sm={0} md={1}></Col>
+          </Row>
+        </Container>
       </MatchContextProvider>
     </>
-    : null
+    : <div className='d-flex justify-content-center align-items-center my-auto vh-100'>
+        <Spinner animation="border" variant='primary' style={{ width:'100px', height:'100px' }} />
+      </div>
   );
 }
 

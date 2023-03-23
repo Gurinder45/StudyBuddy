@@ -1,22 +1,42 @@
 import React from "react";
-import { Container, Navbar } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Button, Container, Nav, Navbar } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
 
 interface RootNavbarProps {
-    children: React.ReactNode
+    loggedIn: Boolean
 }
 
-function RootNavbar({ children }: RootNavbarProps) {
+function RootNavbar({ loggedIn }: RootNavbarProps) {
+    const navigate = useNavigate();
+
+    const logout = async (event: any) => {
+        event.preventDefault();
+
+        const response = await fetch('/users/logout');
+        const data = await response.json();
+        if (data.loggedOut) {
+            setTimeout(() => navigate('/login'), 0);
+        }
+    }
+
     return (
         <Navbar>
             <Container>
-                <Navbar.Brand as={Link} to="/">
+                <Navbar.Brand as={Link} to="/welcome">
                     StudyBuddy
                 </Navbar.Brand>
                 <Navbar.Toggle />
-                <Navbar.Collapse className="justify-content-end">
-                    {children}
-                </Navbar.Collapse>
+                {loggedIn ?
+                    <Navbar.Collapse className="justify-content-between">
+                        <Nav>
+                            <Nav.Link onClick={() => {navigate('/profile')}}>Edit Profile</Nav.Link>
+                        </Nav>
+                        <Navbar.Text>
+                            <Button variant='danger' onClick={logout}>Logout</Button>
+                        </Navbar.Text>
+                    </Navbar.Collapse>
+                : null
+                }
             </Container>
         </Navbar>
     )

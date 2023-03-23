@@ -104,7 +104,7 @@ function SignupPage() {
 
     return (
         <>
-    <RootNavbar> </RootNavbar>
+    <RootNavbar loggedIn={data.loggedIn} />
     <Container>
       <Row>
         <Col sm={2} md={3} lg={4}></Col>
