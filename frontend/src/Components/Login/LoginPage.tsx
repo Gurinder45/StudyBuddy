@@ -45,6 +45,7 @@ function LoginPage() {
       <Row>
         <Col sm={2} md={3} lg={4}></Col>
         <Col sm={8} md={6} lg={4}>
+        <h2>Login</h2>
         <Form onSubmit={handleSubmit}>
           <FormGroup className='mb-3' controlId='formUsername'>
             <Form.Label>Username:</Form.Label>

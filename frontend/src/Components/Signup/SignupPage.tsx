@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
+import { Button, ButtonGroup, Col, Container, Form, FormGroup, Row, Stack } from 'react-bootstrap';
+import RootNavbar from '../Root/RootNavbar';
 import './SignupPage.css';
 function SignupPage() {
     const navigate = useNavigate();
@@ -101,19 +103,21 @@ function SignupPage() {
     };
 
     return (
-        <div>
-        <h2>Signup Page</h2>
-        <form onSubmit={handleSubmit}>
-            <label>
-            Username:
-            <input
-                type="text"
+        <>
+    <RootNavbar> </RootNavbar>
+    <Container>
+      <Row>
+        <Col sm={2} md={3} lg={4}></Col>
+        <Col sm={8} md={6} lg={4}>
+        <h2>Signup</h2>
+        <Form onSubmit={handleSubmit}>
+          <FormGroup className='mb-3' controlId='formUsername'>
+            <Form.Label>Username:</Form.Label>
+            <Form.Control type="text"
                 value={username}
                 onChange={handleUsernameChange}
                 required
-                minLength={3}
-            />
-            </label>
+                minLength={3} />
             {username.length < 3 && (
             <p style={{ color: 'red' }}>
                 Username must be at least 3 characters long
@@ -124,53 +128,49 @@ function SignupPage() {
                 {usernameError}
             </p>
             )}
-
-            <br />
-            <label>
-            Password:
-            <input
-                type="password"
+          </FormGroup>
+          <FormGroup className='mb-3' controlId='formPassword'>
+            <Form.Label>Password:</Form.Label>
+            <Form.Control type="password"
                 value={password}
                 onChange={handlePasswordChange}
                 required
-                minLength={4}
-            />
-            </label>
+                minLength={4} />
             {password.length < 4 && (
             <p style={{ color: 'red' }}>
                 Password must be at least 4 characters long
             </p>
             )}
-            <br />
-            <label>
-            University:
-            <input
-                type="text"
+          </FormGroup>
+          <FormGroup className='mb-3' controlId='formUniversity'>
+            <Form.Label>University:</Form.Label>
+            <Form.Control type="text"
                 value={university}
                 onChange={handleUniversityChange}
-                required
-            />
-            </label>
+                required />
             {!university && (
             <p style={{ color: 'red' }}>University field cannot be empty</p>
             )}
-            <br />
-            <label>
-            Courses (comma-separated):
-            <input
-                type="text"
+          </FormGroup>
+          <FormGroup className='mb-3' controlId='formCourses'>
+            <Form.Label>Courses (comma-separated):</Form.Label>
+            <Form.Control type="text"
                 value={courses.join(',')}
                 onChange={handleCoursesChange}
-                required
-            />
-            </label>
+                required />
             {courses.length === 0 && (
             <p style={{ color: 'red' }}>At least one course is required</p>
             )}
-            <br />
-            <button type="submit">Submit</button>
-        </form>
-        </div>
+          </FormGroup>
+          <div className="d-flex justify-content-evenly">
+            <Button variant='primary' type="submit">Submit</Button>
+          </div>
+        </Form>
+        </Col>
+        <Col sm={2} md={3} lg={4}></Col>
+      </Row>
+    </Container>
+    </>
         
     );
 }
