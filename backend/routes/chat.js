@@ -1,0 +1,89 @@
+const express = require('express');
+const router = express.Router();
+const User = require('../user.model');
+const Match = require('../match.model');
+const Chatroom = require('../chatroom.model');
+const Message = require('../message.model');
+import { v4 as uuidv4 } from 'uuid';
+
+// Retrieve all current user's chatrooms
+router.get('/', async (req, res, next) => {
+    if (!req.session.user) { // not logged in
+        res.sendStatus(401);
+        return;
+    }
+
+    // Get all chatrooms associated with the current user
+    const chatrooms = await Chatroom.find(
+        { users: req.session.user.username }
+    )
+
+    res.json(chatrooms);
+});
+
+// Create a new group chatroom (should be linked to a form)
+router.post('/new-group', async (req, res, next) => {
+    if (!req.session.user) { // not logged in
+        res.sendStatus(401);
+        return;
+    }
+
+    const currUsername = req.session.user.username;
+    const chatTitle = req.body.title;
+    const chatBuddies = req.body.users; // will be an array consisting of all people to put in the chat
+    const chatId = uuidv4();
+
+    // Check if current user is included in the list of users
+    if (!chatBuddies.includes(currUsername)) {
+        chatBuddies.unshift(currUsername); // add to beginning as the creator
+    }
+    
+    // Create chatroom in database
+    let chatroom = new Chatroom({
+        id: chatId,
+        title: chatTitle,
+        type: "group",
+        users: chatBuddies,
+    });
+
+    try {
+        await chatroom.save();
+    } catch (e) {
+        console.log(e.message);
+        res.sendStatus(500); // server error
+        return;
+    }
+
+    res.json(chatId); // return the chatid for the frontend to redirect to
+});
+
+// Retrieve all messages from a given chatroom
+router.get('/:id', async (req, res, next) => {
+    if (!req.session.user) { // not logged in
+        res.sendStatus(401);
+        return;
+    }
+
+    const currUsername = req.session.user.username;
+    const chatId = req.params.id;
+
+    // Check requested chatroom
+    const chatrooms = await Chatroom.find(
+        { users: req.session.user.username, id: chatId }
+    )
+    if (chatrooms.length <= 0) { // no chats found
+        res.sendStatus(403);
+        return;
+    }
+
+    // Return all messages for requested chatroom
+    const messages = await Message.find({
+        chatId: chatId
+    })
+
+    res.json(messages); // client will sort out returned messages
+});
+
+// New messages will be handled using socket.io
+
+module.exports = router;

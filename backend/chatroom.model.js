@@ -9,6 +9,7 @@ var Schema = mongoose.Schema;
 var chatroomSchema = new Schema({
     id: {type: String, required: true},
     title: {type: String, required: true},
+    type: {type: String, required: true},
     users: {type: [String], required: true},
 })
 
