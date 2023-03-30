@@ -69,7 +69,7 @@ router.get('/:id', async (req, res, next) => {
 
     // Check requested chatroom
     const chatrooms = await Chatroom.find(
-        { users: req.session.user.username, id: chatId }
+        { users: currUsername, id: chatId }
     )
     if (chatrooms.length <= 0) { // no chats found
         res.sendStatus(403);
@@ -82,6 +82,80 @@ router.get('/:id', async (req, res, next) => {
     })
 
     res.json(messages); // client will sort out returned messages
+});
+
+// Add a user to a group chat
+router.post('/add-user/:id', async (req, res, next) => {
+    if (!req.session.user) { // not logged in
+        res.sendStatus(401);
+        return;
+    }
+
+    const currUsername = req.session.user.username;
+    const chatId = req.params.id;
+    const addUsername = req.body.userToAdd;
+
+    // Check if the user already exists in the current chatroom
+    const chatrooms = await Chatroom.find(
+        { users: currUsername, id: chatId }
+    )
+    if (chatrooms.length <= 0) { // no chats found
+        res.sendStatus(401);
+        return;
+    }
+
+    // Check if the user is actually buddies with the current user
+    const userQuery = await User.find(
+        { username: currUsername, buddies: addUsername }
+    );
+    if (userQuery.length <= 0) { // user is NOT in current user's buddies
+        res.sendStatus(401);
+        return;
+    }
+
+    // Add requested user to the group chat
+    await Chatroom.updateOne(
+        { id: chatId },
+        { $push: { users: addUsername } },
+    ).catch((e) => {
+        console.log(e);
+        res.sendStatus(500);
+        return;
+    })
+
+    res.sendStatus(200);
+});
+
+// Leave a group chat
+router.delete('/leave/:id', async (req, res, next) => {
+    if (!req.session.user) { // not logged in
+        res.sendStatus(401);
+        return;
+    }
+
+    const currUsername = req.session.user.username;
+    const chatId = req.params.id;
+
+    // Check if the user already exists in the current chatroom
+    const chatrooms = await Chatroom.find(
+        { users: currUsername, id: chatId }
+    )
+    if (chatrooms.length <= 0) { // no chats found
+        res.sendStatus(401);
+        return;
+    }
+
+    // Remove the current user from that group chat
+    await Chatroom.updateOne(
+        { id: chatId },
+        { $pull: { users: currUsername } },
+    ).catch((e) => {
+        console.log(e);
+        res.sendStatus(500);
+        return;
+    })
+
+    res.sendStatus(200);
 });
 
 // New messages will be handled using socket.io
