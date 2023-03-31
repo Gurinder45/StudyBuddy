@@ -23,16 +23,6 @@ const EditProfile = () => {
     }
   }, [data.loggedIn, navigate]);
 
-  const logout = async (event: any) => {
-    event.preventDefault();
-
-    const response = await fetch("/users/logout");
-    const data = await response.json();
-    if (data.loggedOut) {
-      setTimeout(() => navigate("/login"), 0);
-    }
-  };
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const coursesArray = courses.split(",").map((course: string) => course.trim());

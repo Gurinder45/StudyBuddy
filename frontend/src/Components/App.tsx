@@ -12,6 +12,8 @@ import LoginPage from './Login/LoginPage';
 import RootPage, { checkLoggedIn } from './Root/RootPage';
 import SignupPage from './Signup/SignupPage';
 import EditProfile from './EditProfile/EditProfile';
+import ChatList from './ChatList/ChatList';
+import CreateChat from './ChatList/CreateChat';
 import { Spinner } from 'react-bootstrap';
 
 function App() {
@@ -27,6 +29,10 @@ function App() {
         <Route path="/signup" element={<SignupPage />} loader = {checkLoggedIn}/>
 
         <Route path="/profile" element={<EditProfile />} loader = {checkLoggedIn}/>
+
+        <Route path="/chats" element={<ChatList />} loader = {checkLoggedIn}/>
+
+        <Route path="/create-chat" element={<CreateChat />} loader = {checkLoggedIn}/>
 
         <Route path="*" element={
           <>
