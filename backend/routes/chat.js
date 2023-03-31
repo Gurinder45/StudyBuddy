@@ -4,7 +4,7 @@ const User = require('../user.model');
 const Match = require('../match.model');
 const Chatroom = require('../chatroom.model');
 const Message = require('../message.model');
-import { v4 as uuidv4 } from 'uuid';
+const uuid = require('uuid');
 
 // Retrieve all current user's chatrooms
 router.get('/', async (req, res, next) => {
@@ -31,7 +31,7 @@ router.post('/new-group', async (req, res, next) => {
     const currUsername = req.session.user.username;
     const chatTitle = req.body.title;
     const chatBuddies = req.body.users; // will be an array consisting of all people to put in the chat
-    const chatId = uuidv4();
+    const chatId = uuid.v4();
 
     // Check if current user is included in the list of users
     if (!chatBuddies.includes(currUsername)) {

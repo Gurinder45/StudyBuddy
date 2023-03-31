@@ -1,12 +1,16 @@
 const { Server } = require("socket.io");
-const db = require('./db'); // Import the database connection
+const User = require('../user.model');
+const Match = require('../match.model');
+const Chatroom = require('../chatroom.model');
+const Message = require('../message.model');
 
 module.exports = 
 /**
  * @param {Server} io 
  */
 function(io) {
-    io.of('/chat').on('connection', (socket) => {
-        
+    io.of('/chat').on('connection', async (socket) => {
+        let query = await User.findOne({username: "fan"});
+        socket.emit('hello', query);
     });
 };

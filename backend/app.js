@@ -14,6 +14,7 @@ const mongoStore = MongoStore.create({
 });
 
 var app = express();
+var io = require('./io');
 app.use(
   session({
       name: 'session',
@@ -73,6 +74,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
 });
 
-
+// Socket.io modules
+require('./sockets/chatSocket')(io); // this should now have database access?
 
 module.exports = app;
