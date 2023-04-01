@@ -8,6 +8,11 @@ var userSchema = new Schema({
     university:{type: String, required:true},
     courses: {type: [String], required:true},
     buddies: {type: [String]},
+    viewbuddy: {type:String},
+    // profilepic: {
+    //   data: Buffer,
+    //   contentType:String
+    // },
     
     location: {
         type: {

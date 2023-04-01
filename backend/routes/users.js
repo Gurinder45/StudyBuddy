@@ -202,4 +202,62 @@ router.get("/info", async (req, res) => {
   }
 });
 
+//----------SINGLE matchedbuddy info --------------
+
+router.get('/matchedbuddyinfo', async(req, res)=>{
+  const selfusername = req.session.user.username //send the buddy's username through 
+
+  console.log("=MATCHED BUDDY INFO ");
+  console.log(selfusername);
+  console.log("MATCHED BUDDY DONEEEEEE ");
+
+  try{
+    const user = await User.find({username:selfusername})
+    const viewbuddyusername = user[0].viewbuddy;
+    const buddyinformation = await User.find({username:viewbuddyusername})
+    console.log("MATCHED  VIEW BUDDY of current user------")
+    console.log(buddyinformation)
+    console.log("MATCHED  VIEW BUDDY of current user DONEEE------")
+
+    res.json(buddyinformation)
+    // console.log("OK")
+  }
+  catch(error){
+    console.error(error);
+    res.status(500).json({error: "Internal Server Error when getting matchedbuddy info"})
+  }
+})
+
+router.post('/addsinglebuddy', async (req, res) => {
+  const buddyUsername = req.body.buddyname; //send the buddy's username through 
+  console.log("KATIES adding single buddy ");
+  console.log(buddyUsername);
+  console.log("KATIES adding single buddy DONEEEEEE ");
+  const selfuser = req.session.user.username;
+
+  try {
+    const user = await User.findOne({ username: selfuser });
+    if (user) {
+      console.log("KATIES adding single buddy INFO own user actually foudn in db");
+      console.log(user);
+      console.log(buddyUsername);
+      console.log("KATIES adding single buddy own user actually foudn in db");
+      const filter = { username: selfuser };
+      const update = { viewbuddy: buddyUsername };
+      const options = { new: true };
+      const updatedUser = await User.findOneAndUpdate(filter, update, options);
+      console.log("returned::::::", updatedUser);
+      res.json(updatedUser);
+    } else {
+      console.log("User not found");
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error when getting matchedbuddy info" });
+  }
+});
+
+
+//----------SINGLE matchedbuddy info --------------^^^^^
 module.exports = router;

@@ -13,6 +13,7 @@ import RootPage, { checkLoggedIn } from './Root/RootPage';
 import SignupPage from './Signup/SignupPage';
 import EditProfile from './EditProfile/EditProfile';
 import { Spinner } from 'react-bootstrap';
+import BuddyProfile from './BuddyProfile/BuddyProfile';
 
 function App() {
 
@@ -27,6 +28,8 @@ function App() {
         <Route path="/signup" element={<SignupPage />} loader = {checkLoggedIn}/>
 
         <Route path="/profile" element={<EditProfile />} loader = {checkLoggedIn}/>
+
+        <Route path="/buddyprofile" element={<BuddyProfile />} />
 
         <Route path="*" element={
           <>
