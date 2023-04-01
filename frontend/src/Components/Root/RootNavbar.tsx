@@ -30,6 +30,7 @@ function RootNavbar({ loggedIn }: RootNavbarProps) {
                     <Navbar.Collapse className="justify-content-between">
                         <Nav>
                             <Nav.Link onClick={() => {navigate('/profile')}}>Edit Profile</Nav.Link>
+                            <Nav.Link onClick={() => {navigate('/chats')}}>Chat</Nav.Link>
                         </Nav>
                         <Navbar.Text>
                             <Button variant='danger' onClick={logout}>Logout</Button>

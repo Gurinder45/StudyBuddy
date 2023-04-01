@@ -87,7 +87,22 @@ router.get('/candidates', async (req, res, next) => {
 
     // Get list of users that match based on similar fields
     const candidates = await User.find(
-        { username: { $nin: filterOut, $ne: currUser.username } },
+        { 
+            username: { $nin: filterOut, $ne: currUser.username },
+            location: {
+                // Only consider users with location available
+                $near: {
+                  $geometry: {
+                    type: "Point",
+                    coordinates: [
+                      currUser.location.coordinates[0],
+                      currUser.location.coordinates[1],
+                    ],
+                  },
+                  $maxDistance: 1000, // 1 km
+                },
+              },
+        },
         { password: 0 }
     )
     
