@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState , useEffect} from "react";
 import { Button, Container, Nav, Navbar } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 
 interface RootNavbarProps {
     loggedIn: Boolean
@@ -8,6 +8,21 @@ interface RootNavbarProps {
 
 function RootNavbar({ loggedIn }: RootNavbarProps) {
     const navigate = useNavigate();
+    const [image, setImage] = useState(null);
+    const data: any = useLoaderData();
+
+    useEffect(() => {
+        if (!data.loggedIn) {
+          setTimeout(() => navigate("/login"), 0);
+        } else {
+          const fetchUserData = async () => {
+            const response = await fetch("/users/info");
+            const data = await response.json();
+            setImage(data.image);
+          };
+          fetchUserData();
+        }
+      }, [data.loggedIn, navigate]);
 
     const logout = async (event: any) => {
         event.preventDefault();
@@ -22,6 +37,13 @@ function RootNavbar({ loggedIn }: RootNavbarProps) {
     return (
         <Navbar>
             <Container>
+            <div className="navbar-brand" style={{display:'flex', justifyContent:'centre', alignItems: 'center',margin:'auto', paddingRight:'10px'}}>
+              {image && (
+              <div style={{ width: '50px', height: '50px', border: '2px solid black', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <img src={image} alt="Uploaded file" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </div>
+              )}
+            </div>
                 <Navbar.Brand as={Link} to="/welcome">
                     StudyBuddy
                 </Navbar.Brand>

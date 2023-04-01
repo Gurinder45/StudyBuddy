@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Form, FormGroup, Row } from "react-bootstrap";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import RootNavbar from "../Root/RootNavbar";
-import "./EditProfile.css"
 
 const EditProfile = () => {
   const navigate = useNavigate();
