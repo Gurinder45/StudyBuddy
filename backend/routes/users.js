@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 const User = require("../user.model");
 const geolib = require("geolib");
+const multerUpload = require("../multer-config");
+// const multer = require("multer");
+// const multer = require('multer');
+// const upload = multer({dest: 'Images/'})
 
 router.post("/auth", async function (req, res, next) {
   const { username, password } = req.body;
@@ -32,7 +36,14 @@ router.post("/auth", async function (req, res, next) {
   );
 });
 
-router.post("/signup", async function (req, res, next) {
+// router.post("/test", multerUpload.single("image"), async function(req, res){
+//   console.log("HERE IT IS _______________________________________________________________")
+//   console.log(req.file);
+// })
+
+router.post("/signup", multerUpload.single("image"), async function (req, res, next) {
+  console.log("HERE IT IS _______________________________________________________________")
+  console.log(req.file);
   const { username, password, university, courses } = req.body;
 
   // create a new user with the provided information
@@ -41,6 +52,8 @@ router.post("/signup", async function (req, res, next) {
     password: password,
     university: university,
     courses: courses,
+    //added the image of filepath to the image key
+    image: req.file.path,
     location: {
       type: 'Point',
       coordinates: [0, 0] // default coordinates
@@ -49,6 +62,7 @@ router.post("/signup", async function (req, res, next) {
 
   // save the new user to the database
   try {
+    console.log('inside empty')
     await user.save();
     req.session.regenerate(function (err) {
       if (err) {
@@ -67,6 +81,49 @@ router.post("/signup", async function (req, res, next) {
     res.status(500).send("Error creating user");
   }
 });
+
+// router.post("/signup", multerUpload.single("image"), async function (req, res, next) {
+//   const { username, password, university, courses, image } = req.body;
+//   console.log("HERE IT IS _______________________________________________________________")
+//   console.log(req.body.files, req.body, image)
+//   // console.log(`${__dirname}/Images/${req.file.path}`);
+
+//   // create a new user with the provided information
+//   const user = new User({
+//     username: username,
+//     password: password,
+//     university: university,
+//     courses: courses,
+//     // image: {
+//     //   data: fs.readFileSync(req.file.path),
+//     //   contentType: "image.png"
+//     // },
+//     location: {
+//       type: 'Point',
+//       coordinates: [0, 0] // default coordinates
+//     }
+//   });
+
+//   // save the new user to the database
+//   try {
+//     await user.save();
+//     req.session.regenerate(function (err) {
+//       if (err) {
+//         console.log(err);
+//         res.status(500).send("Session regeneration failed");
+//       } else {
+//         req.session.user = user;
+//         console.log(req.session);
+//         console.log(req.sessionID);
+//         // the session has been regenerated, do something with it
+//         res.status(200).send("Login successful");
+//       }
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send("Error creating user");
+//   }
+// });
 
 router.get("/get-users", async (req, res) => {
   try {
@@ -177,11 +234,18 @@ router.post("/edit", async (req, res) => {
   const username = req.session.user.username;
   const university = req.body.university;
   const courses = req.body.courses;
+  console.log(req.body, req.file)
+  console.log("HERE IT IS _______________________________!!!!!!!!!!!!!!!!!!!")
+  const image = req.body.image;
+  console.log(req.body.image);
+  console.log("HERE IT IS ____________DONE___________________!!!!!!!!!!!!!!!!!!!")
+
 
   try {
     const user = await User.findOneAndUpdate(
       { username },
-      { university, courses },
+      { university, courses, image },
+      // {image},
       { new: true }
     );
     res.json(user);

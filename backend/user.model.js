@@ -9,10 +9,7 @@ var userSchema = new Schema({
     courses: {type: [String], required:true},
     buddies: {type: [String]},
     viewbuddy: {type:String},
-    // profilepic: {
-    //   data: Buffer,
-    //   contentType:String
-    // },
+    image: {type: String, required:true},
     
     location: {
         type: {
