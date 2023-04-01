@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Col, Container, ListGroup, Row, Spinner } from "react-bootstrap";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import RootNavbar from "../Root/RootNavbar";
 
 const ChatList = () => {
@@ -37,10 +37,15 @@ const ChatList = () => {
                 <Button variant='success' type="submit" className="mt-3" onClick={() => {navigate('/create-chat')}}>New Chat</Button>
                
                 <ListGroup className="mt-4 mb-4">
-            
-                  {chats.map((chat: any) => (
-                    <ListGroup.Item key={chat.id}>{chat.title}</ListGroup.Item>
-                  ))}
+                {chats.map((chat: any) => (
+                    <Link
+                    to={`/chatroom/${chat.id}`}
+                    key={chat._id}
+                    className="list-group-item list-group-item-action"
+                    >
+                    {chat.title}
+                    </Link>
+                ))}
                 </ListGroup>
             </Col>
             <Col sm={0} md={1}></Col>
