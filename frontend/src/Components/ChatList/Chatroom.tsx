@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import RootNavbar from "../Root/RootNavbar";
@@ -12,6 +12,7 @@ const Chatroom = () => {
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [socket, setSocket] = useState<any>(null);
+  const messagesEndRef = useRef<any>(null);
 
   useEffect(() => {
     if (!data.loggedIn) {
@@ -35,6 +36,11 @@ const Chatroom = () => {
       newSocket.close();
     };
   }, []);
+  
+  useEffect(() => {
+    messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+  }, [messages]);
+  
   
 
   useEffect(() => {
@@ -82,8 +88,8 @@ const handleSubmit = (event: any) => {
       <Container>
         <Row>
           <Col md={9}>
-            <div>
-              <div style={{ maxHeight: '400px', overflowY: 'scroll' }}>
+            <div style={{ border: '1px solid gray', padding: '10px', borderRadius: '5px' }}>
+              <div style={{ height: '80vh', overflowY: 'scroll' }} ref={messagesEndRef}>
                 {messages.map((message: any, index: number) => (
                   <div key={index} className={`my-3 d-flex ${message.fromUser === data.username ? 'justify-content-end' : 'justify-content-start'}`}>
                     <div className={`p-3`} style={{ display: 'flex', flexDirection: 'column' }}>
@@ -109,7 +115,7 @@ const handleSubmit = (event: any) => {
               </Form>
             </div>
           </Col>
-          <Col md={3}>
+          <Col md={3} style={{ marginTop: '30px' }}>
             <Sidebar chatId={id} loggedInUser={data.username}/>
           </Col>
         </Row>
@@ -119,10 +125,6 @@ const handleSubmit = (event: any) => {
         <Spinner animation="border" variant='primary' style={{ width:'100px', height:'100px' }} />
       </div>
   );
-  
-  
-  
-   
 };
 
 export default Chatroom;

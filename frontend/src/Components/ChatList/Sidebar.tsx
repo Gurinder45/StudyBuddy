@@ -26,10 +26,8 @@ const Sidebar = (props:any) => {
   }, []);
 
   useEffect(() => {
-    console.log("before updating")
     if (socket) {
       socket.on("update-users", () => {
-        console.log("updating")
         fetchUsers();
       });
     }
@@ -51,16 +49,24 @@ const Sidebar = (props:any) => {
 
 
   return (
-    <div>
+    <div className="mb-3">
+      <h4 style={ { textAlign: 'center'} }>Users</h4>
       <ListGroup>
         {users.map((user) => (
-          <ListGroup.Item key={user.username}>{user.username}</ListGroup.Item>
+          <ListGroup.Item key={user.username} className="border-0 mb-2">{user.username}</ListGroup.Item>
         ))}
       </ListGroup>
-      {/* <Button onClick={handleAddUser}>Add User</Button> */}
-      <Button onClick={handleLeaveChat}>Leave Chat</Button>
+      <div className="d-grid gap-1">
+        <Button variant="outline-success" size="sm" onClick={handleAddUser}>
+          Add Users
+        </Button>
+        <Button variant="outline-danger" size="sm" onClick={handleLeaveChat}>
+          Leave Chat
+        </Button>
+      </div>
     </div>
   );
+   
 };
 
 export default Sidebar;
