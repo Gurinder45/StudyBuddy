@@ -37,13 +37,17 @@ const Sidebar = (props:any) => {
 
   const handleLeaveChat = () => {
     if (socket) {
+      const confirmLeave = window.confirm("Are you sure you want to leave the chat?");
+      if (confirmLeave) {
         socket.emit("leave", {
           chatroom: chatId,
           user: loggedInUser,
         });    
         navigate("/chats");
+      }
     }
   };
+  
 
 
   return (
