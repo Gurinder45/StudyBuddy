@@ -3,6 +3,7 @@ import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import RootNavbar from "../Root/RootNavbar";
 import io from 'socket.io-client';
+import Sidebar from "./Sidebar";
 
 const Chatroom = () => {
   const navigate = useNavigate();
@@ -15,6 +16,13 @@ const Chatroom = () => {
   useEffect(() => {
     if (!data.loggedIn) {
       setTimeout(() => navigate("/login"), 0);
+    } else {
+      const fetchMessages = async () => {
+        const response = await fetch(`/chats/${id}`);
+        const data = await response.json();
+        setMessages(data);
+      }; 
+      fetchMessages();
     }
   }, [data.loggedIn, navigate]);
 
@@ -37,14 +45,6 @@ const Chatroom = () => {
     }
   }, [socket]);
 
-//   useEffect(() => {
-//     const fetchMessages = async () => {
-//       const response = await fetch(`/chats/${id}`);
-//       const data = await response.json();
-//       setMessages(data);
-//     };
-//     fetchMessages();
-//   }, [id]);
 
 const handleSubmit = (event: any) => {
     event.preventDefault();
@@ -59,14 +59,14 @@ const handleSubmit = (event: any) => {
       socket.emit("message", {
         chatroom: id,
         body: newMessage,
-        fromuser: data.username,
+        fromUser: data.username,
         sent: timestamp,
       });
 
     const messageObj = {
         chatroom: id,
         body: newMessage,
-        fromuser: data.username,
+        fromUser: data.username,
         sent: timestamp,
     }
     setMessages((messages: any) => [...messages, messageObj]);
@@ -78,49 +78,51 @@ const handleSubmit = (event: any) => {
   return (
     data.loggedIn ?
     <>
-        <RootNavbar loggedIn={data.loggedIn} />
-        <Container>
-          <Row>
-            <Col sm={0} md={1}></Col>
-            <Col sm={12} md={10}>
+      <RootNavbar loggedIn={data.loggedIn} />
+      <Container>
+        <Row>
+          <Col md={9}>
             <div>
-                <h3>Chatroom {id}</h3>
-                <div style={{ maxHeight: '400px', overflowY: 'scroll' }}>
-                  {messages.map((message: any, index: number) => (
-                    <div key={index} className={`my-3 d-flex ${message.fromuser === data.username ? 'justify-content-end' : 'justify-content-start'}`}>
-                      <div className={`p-3`} style={{ display: 'flex', flexDirection: 'column' }}>
-                        {message.fromuser === data.username ? <span className="text-muted ml-2" style={{ textAlign: 'right'}}>You</span> : <span className="text-muted ml-2">{message.fromuser}</span>}
-                        <p className='mb-1'>{message.body}</p>
-                        <small style={{ textAlign: message.fromuser === data.username ? 'right' : 'left' }}>{new Date(message.sent).toLocaleString('en-US', { month: 'short', day:'numeric', hour: 'numeric', minute: 'numeric', hour12: true })}</small>
-                        
-                      </div>
+              <div style={{ maxHeight: '400px', overflowY: 'scroll' }}>
+                {messages.map((message: any, index: number) => (
+                  <div key={index} className={`my-3 d-flex ${message.fromUser === data.username ? 'justify-content-end' : 'justify-content-start'}`}>
+                    <div className={`p-3`} style={{ display: 'flex', flexDirection: 'column' }}>
+                      {message.fromUser === data.username ? <span className="text-muted ml-2" style={{ textAlign: 'right'}}>You</span> : <span className="text-muted ml-2">{message.fromUser}</span>}
+                      <p className='mb-1'>{message.body}</p>
+                      <small style={{ textAlign: message.fromUser === data.username ? 'right' : 'left' }}>{new Date(message.sent).toLocaleString('en-US', { month: 'short', day:'numeric', hour: 'numeric', minute: 'numeric', hour12: true })}</small>
                     </div>
-                  ))}
-                </div>
-                <Form onSubmit={handleSubmit} className="d-flex">
-                  <Form.Group className="flex-grow-1 mr-2">
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter message"
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                    />
-                  </Form.Group>
-                  <Button variant="primary" type="submit" style={{ width: "15%" }}>
-                    Send
-                  </Button>
-                </Form>
+                  </div>
+                ))}
               </div>
-                        
-            </Col>
-            <Col sm={0} md={1}></Col>
-          </Row>
-        </Container>
+              <Form onSubmit={handleSubmit} className="d-flex">
+                <Form.Group className="flex-grow-1 mr-2">
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter message"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                  />
+                </Form.Group>
+                <Button variant="primary" type="submit" style={{ width: "15%" }}>
+                  Send
+                </Button>
+              </Form>
+            </div>
+          </Col>
+          <Col md={3}>
+            <Sidebar chatId={id} loggedInUser={data.username}/>
+          </Col>
+        </Row>
+      </Container>
     </>
     : <div className='d-flex justify-content-center align-items-center my-auto vh-100'>
         <Spinner animation="border" variant='primary' style={{ width:'100px', height:'100px' }} />
       </div>
   );
+  
+  
+  
+   
 };
 
 export default Chatroom;

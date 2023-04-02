@@ -15,6 +15,7 @@ import EditProfile from './EditProfile/EditProfile';
 import ChatList from './ChatList/ChatList';
 import CreateChat from './ChatList/CreateChat';
 import Chatroom from './ChatList/Chatroom';
+import Sidebar from './ChatList/Sidebar';
 import { Spinner } from 'react-bootstrap';
 
 function App() {
