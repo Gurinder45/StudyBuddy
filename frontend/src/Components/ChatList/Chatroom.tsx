@@ -48,6 +48,8 @@ const Chatroom = () => {
 
 const handleSubmit = (event: any) => {
     event.preventDefault();
+    const now = new Date();
+    const timestamp = now.toUTCString();
   
     if (newMessage.trim() === "") {
       return;
@@ -58,12 +60,14 @@ const handleSubmit = (event: any) => {
         chatroom: id,
         body: newMessage,
         fromuser: data.username,
+        sent: timestamp,
       });
 
     const messageObj = {
         chatroom: id,
         body: newMessage,
         fromuser: data.username,
+        sent: timestamp,
     }
     setMessages((messages: any) => [...messages, messageObj]);
   
@@ -79,15 +83,22 @@ const handleSubmit = (event: any) => {
           <Row>
             <Col sm={0} md={1}></Col>
             <Col sm={12} md={10}>
-              <div>
+            <div>
                 <h3>Chatroom {id}</h3>
-                <ul style={{ maxHeight: '400px', overflowY: 'scroll' }}>
-                  {messages.map((message: any) => (
-                    <li key={message._id}>{message.body}</li>
+                <div style={{ maxHeight: '400px', overflowY: 'scroll' }}>
+                  {messages.map((message: any, index: number) => (
+                    <div key={index} className={`my-3 d-flex ${message.fromuser === data.username ? 'justify-content-end' : 'justify-content-start'}`}>
+                      <div className={`p-3`} style={{ display: 'flex', flexDirection: 'column' }}>
+                        {message.fromuser === data.username ? <span className="text-muted ml-2" style={{ textAlign: 'right'}}>You</span> : <span className="text-muted ml-2">{message.fromuser}</span>}
+                        <p className='mb-1'>{message.body}</p>
+                        <small style={{ textAlign: message.fromuser === data.username ? 'right' : 'left' }}>{new Date(message.sent).toLocaleString('en-US', { month: 'short', day:'numeric', hour: 'numeric', minute: 'numeric', hour12: true })}</small>
+                        
+                      </div>
+                    </div>
                   ))}
-                </ul>
-                <Form onSubmit={handleSubmit}>
-                  <Form.Group>
+                </div>
+                <Form onSubmit={handleSubmit} className="d-flex">
+                  <Form.Group className="flex-grow-1 mr-2">
                     <Form.Control
                       type="text"
                       placeholder="Enter message"
@@ -95,7 +106,7 @@ const handleSubmit = (event: any) => {
                       onChange={(e) => setNewMessage(e.target.value)}
                     />
                   </Form.Group>
-                  <Button className="mt-3" variant="primary" type="submit">
+                  <Button variant="primary" type="submit" style={{ width: "15%" }}>
                     Send
                   </Button>
                 </Form>
