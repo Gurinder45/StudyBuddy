@@ -12,6 +12,8 @@ const Sidebar = (props:any) => {
   const fetchUsers = async () => {
     const response = await fetch(`/chats/${chatId}/users`);
     const data = await response.json();
+    // const filteredUsers = data.filter((user: any) => user.username !== loggedInUser);
+    // setUsers(filteredUsers);
     setUsers(data);
   }; 
 
@@ -33,10 +35,6 @@ const Sidebar = (props:any) => {
     }
   }, [socket]);
 
-  const handleAddUser = () => {
-    // TODO: implement add user functionality
-  };
-
   const handleLeaveChat = () => {
     if (socket) {
         socket.emit("leave", {
@@ -57,7 +55,7 @@ const Sidebar = (props:any) => {
         ))}
       </ListGroup>
       <div className="d-grid gap-1">
-        <Button variant="outline-success" size="sm" onClick={handleAddUser}>
+        <Button variant="outline-success" size="sm" onClick={()=> navigate(`/add-users/${chatId}`)}>
           Add Users
         </Button>
         <Button variant="outline-danger" size="sm" onClick={handleLeaveChat}>

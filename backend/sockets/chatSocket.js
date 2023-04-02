@@ -42,5 +42,27 @@ module.exports =
           socket.emit("error", { message: e.message });
         }
       });
+      socket.on("leave", async ({ chatroom, users }) => {
+        try {
+          const chat = await Chatroom.findOne({ id: chatroom });
+          chat.users = chat.users.filter((u) => u !== user);
+          await chat.save();
+          socket.broadcast.to(chatroom).emit("update-users");
+        } catch (e) {
+          console.log(e.message);
+          socket.emit("error", { message: e.message });
+        }
+      });
+      socket.on("add-users", async ({ chatroom, users }) => {
+        try {
+          const chat = await Chatroom.findOne({ id: chatroom });
+          chat.users = [...chat.users, ...users];
+          await chat.save();
+          socket.broadcast.to(chatroom).emit("update-users");
+        } catch (e) {
+          console.log(e.message);
+          socket.emit("error", { message: e.message });
+        }
+      });
     });
   };
