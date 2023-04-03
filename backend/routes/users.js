@@ -132,15 +132,16 @@ router.get("/get-users-inoneKm", async (req, res) => {
           $maxDistance: 1000, // 1 km
         },
       },
-    }).select("username location _id"); //.populate('matchedbuddies'); <- can use this if need be depending on the implmentation of match buddy
+    }).select("username location buddies available _id"); //.populate('matchedbuddies'); <- can use this if need be depending on the implmentation of match buddy
     
     for(let i =0; i<usersWithinOneKm.length;i++){
       console.log(usersWithinOneKm[i].username);
       console.log(usersWithinOneKm[i].location.coordinates);
+      console.log(usersWithinOneKm[i].buddies);
     }
     
     console.log("from server")
-    res.json({ usersWithinOneKm });
+    res.json({ usersWithinOneKm, username: username });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
@@ -151,8 +152,7 @@ router.get("/get-users-inoneKm", async (req, res) => {
 router.post("/post-loc/", (req, res) => {
   const username = req.session.user.username;
   const { lat, lng } = req.body;
-  console.log(lat);
-  console.log(lng);
+  
   const filter = { username: username };
   const update = {
     $set: { location: { type: "Point", coordinates: [lng, lat] } },
@@ -167,11 +167,11 @@ router.post("/post-loc/", (req, res) => {
     console.log("Updated the location");
     console.log(result);
   });
-  // Do something with the latitude and longitude data
-  // For example, you could save it to a database associated with the user
 
   res.sendStatus(200);
 });
+
+
 
 router.post("/edit", async (req, res) => {
   const username = req.session.user.username;
@@ -201,5 +201,6 @@ router.get("/info", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 module.exports = router;

@@ -8,6 +8,7 @@ const cors = require('cors');
 const db = require('./db'); // Import the database connection
 const MongoStore = require('connect-mongo');
 
+
 const mongoStore = MongoStore.create({
   mongoUrl: 'mongodb://cmpt372:TimeToStudy@34.170.98.49:27017/studybuddy?authSource=admin',
   ttl: 60 * 60 * 24 * 7, // 1 week
@@ -76,5 +77,6 @@ app.use(function(err, req, res, next) {
 
 // Socket.io modules
 require('./sockets/chatSocket')(io); // this should now have database access?
+require('./sockets/meet-upSocket')(io);
 
 module.exports = app;
