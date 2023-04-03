@@ -160,6 +160,37 @@ router.delete("/leave/:id", async (req, res, next) => {
   res.sendStatus(200);
 });
 
+// Retrieve all users for a chatroom
+router.get("/:id/users", async (req, res, next) => {
+  if (!req.session.user) {
+    // not logged in
+    res.sendStatus(401);
+    return;
+  }
+
+  const currUsername = req.session.user.username;
+  const chatId = req.params.id;
+
+  // Check requested chatroom
+  const chatrooms = await Chatroom.find({ users: currUsername, id: chatId });
+  if (chatrooms.length <= 0) {
+    // no chats found
+    res.sendStatus(403);
+    return;
+  }
+
+  // Return all users for requested chatroom
+  const chatroom = await Chatroom.findOne({ id: chatId });
+  if (!chatroom) {
+    res.sendStatus(404);
+    return;
+  }
+
+  const users = await User.find({ username: { $in: chatroom.users } });
+
+  res.json(users);
+});
+
 // New messages will be handled using socket.io
 
 module.exports = router;
