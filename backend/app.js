@@ -34,6 +34,8 @@ var chatRouter = require('./routes/chat');
 
 // view engine setup
 app.use(cors());
+//make images folder public for everyone
+app.use('/Images', express.static('Images'))
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

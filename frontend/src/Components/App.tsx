@@ -17,6 +17,7 @@ import CreateChat from './ChatList/CreateChat';
 import Chatroom from './ChatList/Chatroom';
 import AddUsers from './ChatList/AddUsers';
 import { Spinner } from 'react-bootstrap';
+import BuddyProfile from './BuddyProfile/BuddyProfile';
 
 function App() {
 
@@ -32,6 +33,8 @@ function App() {
 
         <Route path="/profile" element={<EditProfile />} loader = {checkLoggedIn}/>
 
+        <Route path="/buddyprofile" element={<BuddyProfile />} />
+        
         <Route path="/chats" element={<ChatList />} loader = {checkLoggedIn}/>
 
         <Route path="/create-chat" element={<CreateChat />} loader = {checkLoggedIn}/>
