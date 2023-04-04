@@ -213,7 +213,34 @@ router.post("/post-loc/", (req, res) => {
   res.sendStatus(200);
 });
 
+router.post("/addreview", async (req, res) => {
+  console.log(req.body)
+  console.log("HERE IT IS ____1234567890987654___________________________!!!!!!!!!!!!!!!!!!!")
 
+  try {
+    Promise.all(req.body.map((singlereview)=>{
+      console.log(singlereview)
+      console.log(singlereview.name)
+      console.log(singlereview.reviews)
+
+      console.log("^^^")
+      const addReview = User.update(
+        { username: singlereview.name },
+        { $push: {reviews:singlereview.reviews} }
+        );
+      // res.json(user);
+    })).then(()=>{
+      res.json({message: "Reviews added successfully"})
+    })
+    .catch((err) =>{
+      console.log(err);
+      res.status(500).json({message:"Failed to add review"})
+    })
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 router.post("/edit", async (req, res) => {
   const username = req.session.user.username;
