@@ -9,6 +9,7 @@ import ShowBuddies from '../ShowBuddies/ShowBuddies';
 import RootNavbar from './RootNavbar';
 import Form from 'react-bootstrap/Form';
 
+
 export default function RootPage() {
   const navigate = useNavigate();
   const data:any = useLoaderData();
@@ -63,6 +64,7 @@ export default function RootPage() {
                 <BuddiesList />
                 <MatchUsersList />
               </Col>
+              
               <Col sm={0} md={1}></Col>
             </Row>
           </Container>

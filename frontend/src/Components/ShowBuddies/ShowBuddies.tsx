@@ -5,16 +5,28 @@ import './ShowBuddies.css';
 import { LatLng } from "use-places-autocomplete";
 import io from "socket.io-client";
 import { MatchContext, MatchContextType } from "../Matching/MatchContext";
+import { Container, Row, Col } from "react-bootstrap";
+import ChatSpot from "./ChatSpots";
 
 export default function ShowBuddies(){
    const {isLoaded} = useLoadScript({googleMapsApiKey:'AIzaSyDNSk4C-ACBV0F0z8yck_KYto3YS_yyZ2Q',})
    if(!isLoaded) return <div>Loading...</div> 
-   
-   return <Map />;
+   const [selectedType, setSelectedType] = useState<string | null>(null);
+
+
+
+   return(
+      <Container>
+        <Row>
+          <Col md = "auto"><Map selectedType={selectedType} /></Col>
+          <Col><ChatSpot onTypeSelect={setSelectedType} /></Col>
+        </Row>
+      </Container>
+   );
 }
 
 
-function Map(){
+function Map({ selectedType }:any){
     const [latitude, setLatitude] = useState<any>();
     const [longitude, setLongitude] = useState<any>();
     const [markers, setMarkers] = useState<any>([{}]);
@@ -36,6 +48,33 @@ function Map(){
       return c.username;
       
     }):null;
+
+    useEffect(()=>{
+      const newSocket = io("/meet-up");
+      setSocket(newSocket);
+      if(selectedType){
+        newSocket.emit("join room", selectedType);
+      }
+      
+      /*
+            setSocket(newSocket);
+            const newrooms: any[] = []
+            newMarkers.map((marker:any)=>{
+              marker.buddies.map((buddy:any)=>{
+                if(buddy === user){
+                  const room = [user, marker.username]
+                  const string = room.sort().join()
+                  newrooms.push(string)
+                  if(newSocket){
+                    newSocket.emit("join room", string);
+                  }
+                }
+              })
+            })
+        */
+    })
+
+
 
     useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -88,25 +127,9 @@ function Map(){
               
             },
             );
-            console.log(newMarkers)
+            
             setMarkers(newMarkers);
             setusername(user)
-            const newSocket = io("/meet-up");
-            setSocket(newSocket);
-            const newrooms: any[] = []
-            newMarkers.map((marker:any)=>{
-              marker.buddies.map((buddy:any)=>{
-                if(buddy === user){
-                  const room = [user, marker.username]
-                  const string = room.sort().join()
-                  newrooms.push(string)
-                  if(newSocket){
-                    newSocket.emit("join room", string);
-                  }
-                }
-              })
-            })
-            setRooms(newrooms)
           })
           
           .catch((error) => {
@@ -136,12 +159,11 @@ function Map(){
       username: username+": Meet-up",
     }
     setNewMarker(marker);
-    console.log(socket)
-    if(socket){
+    
+    if(socket && selectedType){
       rooms.map((room:any)=>{
-        socket.emit("add-marker",room, marker);
+        socket.emit("add-marker",selectedType, marker);
       })
-      
     }
   }, [socket]);
 
@@ -174,9 +196,7 @@ function Map(){
     
 
     const loc = useMemo(()=>({lat:latitude, lng:longitude }),[latitude,longitude])
-    return (<GoogleMap zoom = {15} center = {loc} mapContainerClassName = "map-container"
-            
-            >
+    return (<GoogleMap zoom = {15} center = {loc} mapContainerClassName = "map-container">
         {renderMarkers()}
         {selectedMarker && (
           <InfoWindow
