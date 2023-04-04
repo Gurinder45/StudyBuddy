@@ -19,6 +19,9 @@ module.exports =
         console.log(`User ${socket.id} joined room ${room}`);
         socket.join(room);
       });
+      socket.on("buddy", (buddies)=>{
+        socket.emit("newbuddy",buddy)
+      })
       socket.on("add-marker", (room,marker) => {
         // emit a "new-marker" event to all connected clients
         console.log(`Message received from user ${socket.id}: ${marker}`);

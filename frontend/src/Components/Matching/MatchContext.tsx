@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect, useCallback } from "react";
 import { User } from "../User";
-
 // This file provides access to the MatchContext which stores information to be used across match components
 
 interface MatchContextType {
