@@ -218,24 +218,15 @@ router.post("/addreview", async (req, res) => {
   console.log("HERE IT IS ____1234567890987654___________________________!!!!!!!!!!!!!!!!!!!")
 
   try {
-    Promise.all(req.body.map((singlereview)=>{
-      console.log(singlereview)
-      console.log(singlereview.name)
-      console.log(singlereview.reviews)
+    await Promise.all(req.body.map(async(review)=>{
+      const filter = {username: review.name};
+      const update = {$push: {reviews: review.reviews}};
+      const result = await User.updateMany(filter, update);
 
-      console.log("^^^")
-      const addReview = User.update(
-        { username: singlereview.name },
-        { $push: {reviews:singlereview.reviews} }
-        );
-      // res.json(user);
-    })).then(()=>{
+      console.log(result);
+    }));
       res.json({message: "Reviews added successfully"})
-    })
-    .catch((err) =>{
-      console.log(err);
-      res.status(500).json({message:"Failed to add review"})
-    })
+      
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });

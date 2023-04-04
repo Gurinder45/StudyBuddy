@@ -63,6 +63,7 @@ const Modal = ({open, onClose, chatId, loggedInUser}:ModalProps) => {
             body: JSON.stringify(newArrayOfObj)
         });
         if (addreview.status >= 200 && addreview.status < 300){
+            onClose();
             navigate('/chats');
         }
         else{
@@ -90,7 +91,7 @@ const Modal = ({open, onClose, chatId, loggedInUser}:ModalProps) => {
                 </div>
             ))}
             <br />
-            <Button variant='secondary' size="sm" type='submit' >Done</Button>
+            <Button variant='secondary' size="sm" type='submit'>Done</Button>
             </Form>
 
          </div>
