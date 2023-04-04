@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../user.model");
 const geolib = require("geolib");
 const multerUpload = require("../multer-config");
+const defaultAvatar = require("../default.avatar");
 // const multer = require("multer");
 // const multer = require('multer');
 // const upload = multer({dest: 'Images/'})
@@ -274,9 +275,13 @@ router.get("/image/:username", async (req, res) => {
   const username = req.params.username;
   try {
     const user = await User.findOne({ username });
-    let buffImg = user.image;
-    let image = buffImg.toString('base64');
-    res.json(image);
+    if (user.image) {
+      let buffImg = user.image;
+      let image = buffImg.toString('base64');
+      res.json(image);
+    } else {
+      res.json(defaultAvatar);
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
