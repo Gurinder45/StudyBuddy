@@ -10,6 +10,7 @@ var userSchema = new Schema({
     buddies: {type: [String]},
     viewbuddy: {type:String},
     image: {type: Buffer, required:true},
+    bio:{type:String, require:true, minLength:50},
     
     available: {type: Boolean, required: false, default: false},
     location: {

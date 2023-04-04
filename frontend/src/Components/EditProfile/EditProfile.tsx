@@ -8,6 +8,7 @@ const EditProfile = () => {
   const data: any = useLoaderData();
   const [university, setUniversity] = useState("");
   const [courses, setCourses] = useState("");
+  const [bio, setBio] = useState("");
   const [image, setImage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -19,6 +20,7 @@ const EditProfile = () => {
         const data = await response.json();
         setUniversity(data.university);
         setCourses(data.courses.join(", "));
+        setBio(data.bio);
         // get user's profile image
         setImage('/users/image/' + data.username);
       };
@@ -46,7 +48,7 @@ const EditProfile = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        university,
+        university, bio,
         courses: coursesArray,
         image
       }),
@@ -54,7 +56,7 @@ const EditProfile = () => {
     const data = await response.json();
     if(data) {
         alert(
-            `University set to: ${data.university} \nCourses set to ${data.courses}`)
+            `University set to: ${data.university} \nCourses set to ${data.courses}\n Bio is ${data.bio}`)
         navigate('/welcome')
     }
   };
@@ -108,6 +110,19 @@ const EditProfile = () => {
               value={courses || ""}
               onChange={(e) => setCourses(e.target.value)} />
           </FormGroup>
+
+          <FormGroup className='mb-3' controlId='formBio'>
+            <Form.Label>Bio:</Form.Label>
+            <Form.Control as="textarea" 
+                rows={3}
+                cols={10}
+                value={bio}
+                onChange={(e)=>setBio(e.target.value)}/>
+            {bio.length<50 && (
+            <p style={{ color: 'red' }}>Bio requires a minimum of 50 characters</p>
+            )}
+          </FormGroup>
+
           <div className="d-flex justify-content-evenly">
             <Button variant='primary' type="submit">Submit</Button>
           </div>

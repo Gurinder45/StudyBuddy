@@ -45,7 +45,7 @@ router.post("/auth", async function (req, res, next) {
 router.post("/signup", multerUpload.single("image"), async function (req, res, next) {
   console.log("HERE IT IS _______________________________________________________________")
   console.log(req.file);
-  const { username, password, university, courses } = req.body;
+  const { username, password, university, courses, bio } = req.body;
   
   let base64 = req.file.buffer.toString('base64');
   let bufferToStore = new Buffer(base64, 'base64');
@@ -56,6 +56,7 @@ router.post("/signup", multerUpload.single("image"), async function (req, res, n
     password: password,
     university: university,
     courses: courses,
+    bio: bio,
     //added the image of filepath to the image key
     image: bufferToStore,
     location: {
@@ -66,7 +67,7 @@ router.post("/signup", multerUpload.single("image"), async function (req, res, n
 
   // save the new user to the database
   try {
-    console.log('inside empty')
+    console.log('---------------------', user.bio)
     await user.save();
     req.session.regenerate(function (err) {
       if (err) {
@@ -260,6 +261,7 @@ router.post("/edit", async (req, res) => {
   const username = req.session.user.username;
   const university = req.body.university;
   const courses = req.body.courses;
+  const bio = req.body.bio;
   console.log(req.body, req.file)
   console.log("HERE IT IS _______________________________!!!!!!!!!!!!!!!!!!!")
   const image = req.body.image;
@@ -270,7 +272,7 @@ router.post("/edit", async (req, res) => {
   try {
     const user = await User.findOneAndUpdate(
       { username },
-      { university, courses, image },
+      { university, courses, bio, image },
       // {image},
       { new: true }
     );
