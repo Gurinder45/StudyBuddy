@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useCallback } from "react";
 import { User } from "../User";
 
 // This file provides access to the MatchContext which stores information to be used across match components
@@ -19,14 +19,19 @@ const MatchContextProvider = ({ children }: MatchContextProviderProps) => {
     const [candidates, setCandidates] = useState<User[] | null>(null);
     const [buddies, setBuddies] = useState<User[] | null>(null);
 
+    const updateCallback = useCallback(async () => {
+        await updateContext();
+    }, [])
+
     useEffect(() => {
-        updateContext();
-    }, []);
+        updateContext(); // run once on initial load
+        const interval = setInterval(updateCallback, 5000);
+        return () => { clearInterval(interval); }
+    }, [updateCallback]);
 
     const updateContext = () => {
         updateCandidates();
         updateBuddies();
-        setTimeout(updateContext, 5000);
     };
 
     const updateCandidates = () => {
