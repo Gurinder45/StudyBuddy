@@ -19,7 +19,10 @@ const EditProfile = () => {
         const data = await response.json();
         setUniversity(data.university);
         setCourses(data.courses.join(", "));
-        setImage(data.image);
+        // get user's profile image
+        const imageResponse = await fetch("/users/image/" + data.username);
+        const image = await imageResponse.json();
+        setImage(image);
       };
       fetchUserData();
     }
@@ -87,7 +90,7 @@ const EditProfile = () => {
             <div style={{display:'inline-block', justifyContent:'centre', alignItems: 'center',margin:'auto', paddingLeft:'25%'}}>
               {image && (
               <div style={{ width: '150px', height: '150px', borderRadius: '50%', border: '2px solid black', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <img src={image} alt="Uploaded file" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img src={`data:image/jpeg;base64,${image}`} alt="Uploaded file" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
               )}
             </div>

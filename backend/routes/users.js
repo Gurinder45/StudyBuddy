@@ -45,6 +45,9 @@ router.post("/signup", multerUpload.single("image"), async function (req, res, n
   console.log("HERE IT IS _______________________________________________________________")
   console.log(req.file);
   const { username, password, university, courses } = req.body;
+  
+  let base64 = req.file.buffer.toString('base64');
+  let bufferToStore = new Buffer(base64, 'base64');
 
   // create a new user with the provided information
   const user = new User({
@@ -53,7 +56,7 @@ router.post("/signup", multerUpload.single("image"), async function (req, res, n
     university: university,
     courses: courses,
     //added the image of filepath to the image key
-    image: req.file.path,
+    image: bufferToStore,
     location: {
       type: 'Point',
       coordinates: [0, 0] // default coordinates
@@ -127,7 +130,7 @@ router.post("/signup", multerUpload.single("image"), async function (req, res, n
 
 router.get("/get-users", async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find({}, { image: 0 });
 
     res.json(users);
   } catch (error) {
@@ -256,10 +259,24 @@ router.post("/edit", async (req, res) => {
 });
 
 router.get("/info", async (req, res) => {
+  console.log("we are here");
   const username = req.session.user.username;
   try {
     const user = await User.findOne({ username });
     res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.get("/image/:username", async (req, res) => {
+  const username = req.params.username;
+  try {
+    const user = await User.findOne({ username });
+    let buffImg = user.image;
+    let image = buffImg.toString('base64');
+    res.json(image);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
