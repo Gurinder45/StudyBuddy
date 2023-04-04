@@ -13,8 +13,8 @@ export default function RootPage() {
   const navigate = useNavigate();
   const data:any = useLoaderData();
   
-  const [available, setAvailable] = useState(data.available.available);
-  console.log(data.available.available)
+  const [available, setAvailable] = useState(data.available?.available);
+  console.log(data.available?.available)
   useEffect(() => {
     if (!data.loggedIn) {
       setTimeout(() => navigate('/login'), 0);
