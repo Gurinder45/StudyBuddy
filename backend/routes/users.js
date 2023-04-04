@@ -275,7 +275,7 @@ router.get("/image/:username", async (req, res) => {
   const username = req.params.username;
   try {
     const user = await User.findOne({ username });
-    if (user.image) {
+    if (user.image && user.image.length > 0) {
       let buffImg = user.image;
       let image = buffImg.toString('base64');
       res.json(image);

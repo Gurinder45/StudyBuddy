@@ -16,7 +16,6 @@ function RootNavbar({ loggedIn }: RootNavbarProps) {
             const fetchUserData = async () => {
             const response = await fetch("/users/image/" + data.username);
             const image = await response.json();
-            console.log(image);
             setImage(image);
           };
           fetchUserData();
