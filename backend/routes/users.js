@@ -70,7 +70,7 @@ router.post("/signup", async function (req, res, next) {
 
 router.get("/get-users", async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find().select("username");
 
     res.json(users);
   } catch (error) {
@@ -88,8 +88,8 @@ router.get("/check-logged-in", async function (req, res, next) {
     loggedIn = true;
     username = req.session.user.username;
   }
-
-  res.json({ loggedIn, username });
+  const available = await User.findOne({ username: username }).select("available");
+  res.json({ loggedIn, username, available });
 });
 
 router.get("/logout", function (req, res, next) {
@@ -119,6 +119,7 @@ router.get("/get-users-inoneKm", async (req, res) => {
     const usersWithinOneKm = await User.find({
 
       username: { $ne: username }, // Exclude current user
+      available: true,
       location: {
         // Only consider users with location available
         $near: {
@@ -132,7 +133,7 @@ router.get("/get-users-inoneKm", async (req, res) => {
           $maxDistance: 1000, // 1 km
         },
       },
-    }).select("username location buddies available _id"); //.populate('matchedbuddies'); <- can use this if need be depending on the implmentation of match buddy
+    }).select("username location buddies _id"); //.populate('matchedbuddies'); <- can use this if need be depending on the implmentation of match buddy
     
     for(let i =0; i<usersWithinOneKm.length;i++){
       console.log(usersWithinOneKm[i].username);
@@ -148,6 +149,27 @@ router.get("/get-users-inoneKm", async (req, res) => {
   }
 });
 //----------------------------------------
+
+
+router.post("/availability",(req,res)=>{
+  const username = req.session.user.username;
+  const {available} = req.body;
+  const filter = { username: username };
+  const update ={
+    $set: { available: available},
+  }
+  User.updateOne(filter, update, function (err, result) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    console.log("Updated availability");
+    console.log(result);
+  });
+
+  res.sendStatus(200);
+})
 
 router.post("/post-loc/", (req, res) => {
   const username = req.session.user.username;
