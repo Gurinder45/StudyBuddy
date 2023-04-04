@@ -65,7 +65,9 @@ const Sidebar = (props:any) => {
         <Button variant="outline-danger" size="sm" onClick={handleLeaveChat}>
           Leave Chat
         </Button>
+        
       </div>
+
     </div>
   );
    
