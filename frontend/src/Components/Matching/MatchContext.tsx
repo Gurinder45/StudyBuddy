@@ -26,6 +26,7 @@ const MatchContextProvider = ({ children }: MatchContextProviderProps) => {
     const updateContext = () => {
         updateCandidates();
         updateBuddies();
+        setTimeout(updateContext, 5000);
     };
 
     const updateCandidates = () => {
