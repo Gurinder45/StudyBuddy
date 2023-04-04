@@ -23,7 +23,7 @@ function SignupPage() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [university, setUniversity] = useState("");
-    const [courses, setCourses] = useState([]);
+    const [courses, setCourses] = useState<string[]>([]);
     const [usernameError, setUsernameError] = useState('');
     const [image, setImage] = useState(null);
 
@@ -234,14 +234,23 @@ function SignupPage() {
             )}
           </FormGroup>
           <FormGroup className='mb-3' controlId='formCourses'>
-            <Form.Label>Courses (comma-separated):</Form.Label>
-            <Form.Control type="text"
-                value={courses.join(',')}
-                onChange={handleCoursesChange}
-                required />
-            {courses.length === 0 && (
-            <p style={{ color: 'red' }}>At least one course is required</p>
-            )}
+              <Form.Label>Courses:</Form.Label>
+              {courses.map((course, index) => (
+                <div key={index} className="d-flex">
+                  <Form.Control type="text" value={course}
+                    onChange={(e) => {
+                      const newCourses = [...courses];
+                      newCourses[index] = e.target.value;
+                      setCourses(newCourses);
+                    }} />
+                  <Button variant="outline-danger" onClick={() => {
+                    const newCourses = [...courses];
+                    newCourses.splice(index, 1);
+                    setCourses(newCourses);
+                  }}>X</Button>
+                </div>
+              ))}
+              <Button variant="outline-success" onClick={() => {setCourses([...courses, ""]);}} style={{ width: "100%" }}>+</Button>
           </FormGroup>
           <div className="d-flex justify-content-evenly">
             <Button variant='primary' type="submit">Submit</Button>

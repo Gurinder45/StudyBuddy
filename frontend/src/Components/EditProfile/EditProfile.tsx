@@ -7,7 +7,7 @@ const EditProfile = () => {
   const navigate = useNavigate();
   const data: any = useLoaderData();
   const [university, setUniversity] = useState("");
-  const [courses, setCourses] = useState("");
+  const [courses, setCourses] = useState<string[]>([]);
   const [image, setImage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const EditProfile = () => {
         const response = await fetch("/users/info");
         const data = await response.json();
         setUniversity(data.university);
-        setCourses(data.courses.join(", "));
+        setCourses(data.courses);
         // get user's profile image
         setImage('/users/image/' + data.username);
       };
@@ -26,20 +26,15 @@ const EditProfile = () => {
     }
   }, [data.loggedIn, navigate]);
 
-  // console.log(image);
-  const logout = async (event: any) => {
-    event.preventDefault();
-
-    const response = await fetch("/users/logout");
-    const data = await response.json();
-    if (data.loggedOut) {
-      setTimeout(() => navigate("/login"), 0);
-    }
-  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const coursesArray = courses.split(",").map((course: string) => course.trim());
+    const filteredCourses = courses.filter(course => course !== "");
+    const coursesArray = filteredCourses.map(course => course.trim());
+    if (coursesArray.length === 0) {
+      alert("You must have at least one course");
+      return;
+    }
     const response = await fetch("/users/edit", {
       method: "POST",
       headers: {
@@ -102,12 +97,24 @@ const EditProfile = () => {
               onChange={(e) => setUniversity(e.target.value)} />
           </FormGroup>
           <FormGroup className='mb-3' controlId='formCourses'>
-            <Form.Label>Courses (comma-separated):</Form.Label>
-            <Form.Control type="text"
-              required
-              value={courses || ""}
-              onChange={(e) => setCourses(e.target.value)} />
-          </FormGroup>
+              <Form.Label>Courses:</Form.Label>
+              {courses.map((course, index) => (
+                <div key={index} className="d-flex">
+                  <Form.Control type="text" value={course}
+                    onChange={(e) => {
+                      const newCourses = [...courses];
+                      newCourses[index] = e.target.value;
+                      setCourses(newCourses);
+                    }} />
+                  <Button variant="outline-danger" onClick={() => {
+                    const newCourses = [...courses];
+                    newCourses.splice(index, 1);
+                    setCourses(newCourses);
+                  }}>X</Button>
+                </div>
+              ))}
+              <Button variant="outline-success" onClick={() => {setCourses([...courses, ""]);}} style={{ width: "100%" }}>+</Button>
+            </FormGroup>
           <div className="d-flex justify-content-evenly">
             <Button variant='primary' type="submit">Submit</Button>
           </div>
