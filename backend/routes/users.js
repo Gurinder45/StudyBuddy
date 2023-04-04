@@ -87,48 +87,6 @@ router.post("/signup", multerUpload.single("image"), async function (req, res, n
   }
 });
 
-// router.post("/signup", multerUpload.single("image"), async function (req, res, next) {
-//   const { username, password, university, courses, image } = req.body;
-//   console.log("HERE IT IS _______________________________________________________________")
-//   console.log(req.body.files, req.body, image)
-//   // console.log(`${__dirname}/Images/${req.file.path}`);
-
-//   // create a new user with the provided information
-//   const user = new User({
-//     username: username,
-//     password: password,
-//     university: university,
-//     courses: courses,
-//     // image: {
-//     //   data: fs.readFileSync(req.file.path),
-//     //   contentType: "image.png"
-//     // },
-//     location: {
-//       type: 'Point',
-//       coordinates: [0, 0] // default coordinates
-//     }
-//   });
-
-//   // save the new user to the database
-//   try {
-//     await user.save();
-//     req.session.regenerate(function (err) {
-//       if (err) {
-//         console.log(err);
-//         res.status(500).send("Session regeneration failed");
-//       } else {
-//         req.session.user = user;
-//         console.log(req.session);
-//         console.log(req.sessionID);
-//         // the session has been regenerated, do something with it
-//         res.status(200).send("Login successful");
-//       }
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).send("Error creating user");
-//   }
-// });
 
 router.get("/get-users", async (req, res) => {
   try {

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button, ListGroup } from "react-bootstrap";
 import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
+import Modal from "../Modal/Modal";
 
 
 const Sidebar = (props:any) => {
@@ -9,6 +10,8 @@ const Sidebar = (props:any) => {
   const { chatId, loggedInUser } = props;
   const [users, setUsers] = useState<any[]>([]);
   const [socket, setSocket] = useState<any>(null);
+  const [openModal, setOpenModal] = useState(false);
+
   const fetchUsers = async () => {
     const response = await fetch(`/chats/${chatId}/users`);
     const data = await response.json();
@@ -39,13 +42,25 @@ const Sidebar = (props:any) => {
     if (socket) {
       const confirmLeave = window.confirm("Are you sure you want to leave the chat?");
       if (confirmLeave) {
-        socket.emit("leave", {
-          chatroom: chatId,
-          user: loggedInUser,
-        });    
-        navigate("/chats");
+        // socket.emit("leave", {
+        //   chatroom: chatId,
+        //   user: loggedInUser,
+        // });    
+        setOpenModal(true)
+        // navigate("/chats");
       }
     }
+  };
+
+  const rejectReview = () => {
+    setOpenModal(false); 
+    if (socket) {
+      socket.emit("leave", {
+        chatroom: chatId,
+        user: loggedInUser,
+      });
+    }    
+        navigate("/chats");
   };
   
 
@@ -65,6 +80,7 @@ const Sidebar = (props:any) => {
         <Button variant="outline-danger" size="sm" onClick={handleLeaveChat}>
           Leave Chat
         </Button>
+        <Modal open={openModal} chatId={chatId} loggedInUser={users} onClose={rejectReview}/>
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ const BuddyProfile = () => {
   const [buddyprofile, setBuddyprofile] = useState<any>();
   const [buddyUniversity, setbuddyUniversity] = useState<any>();
   const [buddyCourses, setbuddyCourses] = useState<any>([]);
+  const [buddyBio, setbuddyBio] = useState<any>();
 
 
   useEffect(()=>{
@@ -24,6 +25,7 @@ const BuddyProfile = () => {
       setbuddyCourses(data[0].courses);
       setbuddyUniversity(data[0].university);
       setBuddyprofile(location.state.buddyusername);
+      setbuddyBio(data[0].bio);
     }
     fetchdata();
   }, []);
@@ -49,6 +51,7 @@ const BuddyProfile = () => {
         <ListGroup className="list-group-flush">
           <ListGroupItem>University: {buddyUniversity}</ListGroupItem>
           <ListGroupItem>Courses: {buddyCourses}</ListGroupItem>
+          <ListGroupItem>Bio: {buddyBio}</ListGroupItem>
         </ListGroup>
       </Card>
         {/* <h3>User Profile</h3>
