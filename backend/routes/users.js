@@ -300,10 +300,20 @@ router.get("/image/:username", async (req, res) => {
     const user = await User.findOne({ username });
     if (user.image && user.image.length > 0) {
       let buffImg = user.image;
-      let image = buffImg.toString('base64');
-      res.json(image);
+      let base64 = buffImg.toString('base64');
+      let image = Buffer.from(base64, 'base64');
+      res.writeHead(200, {
+        'Content-Type': 'image/png',
+        'Content-Length': image.length
+      });
+      res.end(image);
     } else {
-      res.json(defaultAvatar);
+      let image = Buffer.from(defaultAvatar, 'base64');
+      res.writeHead(200, {
+        'Content-Type': 'image/png',
+        'Content-Length': image.length
+      });
+      res.end(image);
     }
   } catch (error) {
     console.error(error);
