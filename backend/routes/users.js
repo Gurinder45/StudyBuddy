@@ -132,7 +132,7 @@ router.get("/get-users-inoneKm", async (req, res) => {
           $maxDistance: 1000, // 1 km
         },
       },
-    }).select("username location buddies available _id"); //.populate('matchedbuddies'); <- can use this if need be depending on the implmentation of match buddy
+    }).select("username location buddies _id"); //.populate('matchedbuddies'); <- can use this if need be depending on the implmentation of match buddy
     
     for(let i =0; i<usersWithinOneKm.length;i++){
       console.log(usersWithinOneKm[i].username);
