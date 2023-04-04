@@ -31,6 +31,12 @@ function Map(){
       
     }):null;
 
+    const candidatesList = matchContext.candidates ?
+    matchContext.candidates.map((c)=>{
+      return c.username;
+      
+    }):null;
+
     useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
         console.log(position.coords.longitude)
@@ -72,12 +78,14 @@ function Map(){
             const usersWithinOneKm = data.usersWithinOneKm;
             const user = data.username
             const newMarkers = usersWithinOneKm.map((user:any) => {
-              return {
-                lat: user.location.coordinates[1],
-                lng: user.location.coordinates[0],
-                username: user.username,
-                buddies: user.buddies
-              };
+              
+                return {
+                  lat: user.location.coordinates[1],
+                  lng: user.location.coordinates[0],
+                  username: user.username,
+                  buddies: user.buddies
+                };
+              
             },
             );
             console.log(newMarkers)
@@ -140,24 +148,26 @@ function Map(){
     var url = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
     const renderMarkers = () => {
         return markers.map((marker:any, index:any) => {
-          console.log(buddiesList)
-          if(buddiesList && buddiesList.includes(marker.username)){
-            url = "http://maps.google.com/mapfiles/ms/icons/purple-dot.png"
+          if(candidatesList?.includes(marker.username) || buddiesList?.includes(marker.username)){
+            if(buddiesList && buddiesList.includes(marker.username)){
+              url = "http://maps.google.com/mapfiles/ms/icons/purple-dot.png"
+            }
+            else{
+              url = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+            }
+            return <Marker key={index} position={{ lat: marker.lat, lng: marker.lng }} title = {marker.username}  
+            icon = {{
+              url: url,
+              scale: 10
+            }}
+            onClick={() => {
+              
+              setSelectedMarker(marker);
+            }}
+            >
+            </Marker>;
           }
-          else{
-            url = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-          }
-          return <Marker key={index} position={{ lat: marker.lat, lng: marker.lng }} title = {marker.username}  
-          icon = {{
-            url: url,
-            scale: 10
-          }}
-          onClick={() => {
-            
-            setSelectedMarker(marker);
-          }}
-          >
-          </Marker>;
+         
         });
     };
     
