@@ -11,10 +11,11 @@ var userSchema = new Schema({
     viewbuddy: {type:String},
     image: {type: Buffer, required:true},
     
+    available: {type: Boolean, required: false, default: false},
     location: {
         type: {
-          type: String, // Don't do `{ location: { type: String } }`
-          enum: ['Point'], // 'location.type' must be 'Point'
+          type: String, 
+          enum: ['Point'], 
           required: false
         },
         coordinates: {

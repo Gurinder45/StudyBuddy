@@ -131,7 +131,7 @@ router.post("/signup", multerUpload.single("image"), async function (req, res, n
 
 router.get("/get-users", async (req, res) => {
   try {
-    const users = await User.find({}, { image: 0 });
+    const users = await User.find();
 
     res.json(users);
   } catch (error) {
@@ -149,8 +149,8 @@ router.get("/check-logged-in", async function (req, res, next) {
     loggedIn = true;
     username = req.session.user.username;
   }
-
-  res.json({ loggedIn, username });
+  const available = await User.findOne({ username: username }).select("available");
+  res.json({ loggedIn, username, available });
 });
 
 router.get("/logout", function (req, res, next) {
@@ -180,6 +180,7 @@ router.get("/get-users-inoneKm", async (req, res) => {
     const usersWithinOneKm = await User.find({
 
       username: { $ne: username }, // Exclude current user
+      available: true,
       location: {
         // Only consider users with location available
         $near: {
@@ -193,15 +194,16 @@ router.get("/get-users-inoneKm", async (req, res) => {
           $maxDistance: 1000, // 1 km
         },
       },
-    }).select("username location _id"); //.populate('matchedbuddies'); <- can use this if need be depending on the implmentation of match buddy
+    }).select("username location buddies _id"); //.populate('matchedbuddies'); <- can use this if need be depending on the implmentation of match buddy
     
     for(let i =0; i<usersWithinOneKm.length;i++){
       console.log(usersWithinOneKm[i].username);
       console.log(usersWithinOneKm[i].location.coordinates);
+      console.log(usersWithinOneKm[i].buddies);
     }
     
     console.log("from server")
-    res.json({ usersWithinOneKm });
+    res.json({ usersWithinOneKm, username: username });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
@@ -209,11 +211,31 @@ router.get("/get-users-inoneKm", async (req, res) => {
 });
 //----------------------------------------
 
+
+router.post("/availability",(req,res)=>{
+  const username = req.session.user.username;
+  const {available} = req.body;
+  const filter = { username: username };
+  const update ={
+    $set: { available: available},
+  }
+  User.updateOne(filter, update, function (err, result) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    console.log("Updated availability");
+    console.log(result);
+  });
+
+  res.sendStatus(200);
+})
+
 router.post("/post-loc/", (req, res) => {
   const username = req.session.user.username;
   const { lat, lng } = req.body;
-  console.log(lat);
-  console.log(lng);
+  
   const filter = { username: username };
   const update = {
     $set: { location: { type: "Point", coordinates: [lng, lat] } },
@@ -228,11 +250,11 @@ router.post("/post-loc/", (req, res) => {
     console.log("Updated the location");
     console.log(result);
   });
-  // Do something with the latitude and longitude data
-  // For example, you could save it to a database associated with the user
 
   res.sendStatus(200);
 });
+
+
 
 router.post("/edit", async (req, res) => {
   const username = req.session.user.username;
@@ -270,6 +292,7 @@ router.get("/info", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 router.get("/image/:username", async (req, res) => {
   const username = req.params.username;

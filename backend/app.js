@@ -8,12 +8,14 @@ const cors = require('cors');
 const db = require('./db'); // Import the database connection
 const MongoStore = require('connect-mongo');
 
+
 const mongoStore = MongoStore.create({
   mongoUrl: 'mongodb://cmpt372:TimeToStudy@34.170.98.49:27017/studybuddy?authSource=admin',
   ttl: 60 * 60 * 24 * 7, // 1 week
 });
 
 var app = express();
+var io = require('./io');
 app.use(
   session({
       name: 'session',
@@ -28,6 +30,7 @@ app.use(
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var matchRouter = require('./routes/match');
+var chatRouter = require('./routes/chat');
 
 // view engine setup
 app.use(cors());
@@ -41,6 +44,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/matches', matchRouter);
+app.use('/chats', chatRouter);
 var options = {
   dotfiles: 'ignore',
   extensions: ['htm','html','json']
@@ -73,6 +77,8 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
 });
 
-
+// Socket.io modules
+require('./sockets/chatSocket')(io); // this should now have database access?
+require('./sockets/meet-upSocket')(io);
 
 module.exports = app;
