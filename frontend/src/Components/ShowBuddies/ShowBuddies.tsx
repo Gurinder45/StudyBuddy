@@ -203,6 +203,7 @@ function Map(){
             });
           }}/>
         )}
+
         {loc && (
         <Circle
           center={loc}
@@ -214,7 +215,19 @@ function Map(){
             strokeOpacity: 0.7,
             strokeWeight: 2,
           }}
+          
+        />
+      )}
+
+      {loc && (
+        <Circle
+          center={loc}
+          radius={1000000}
           onClick ={OnCircleClick}
+          options={{
+            fillOpacity: 0,
+            strokeOpacity: 0
+          }}
         />
       )}
     </GoogleMap>);
