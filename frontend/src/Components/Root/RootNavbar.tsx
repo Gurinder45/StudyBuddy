@@ -12,17 +12,15 @@ function RootNavbar({ loggedIn }: RootNavbarProps) {
     const data: any = useLoaderData();
 
     useEffect(() => {
-        if (!data.loggedIn) {
-          setTimeout(() => navigate("/login"), 0);
-        } else {
-          const fetchUserData = async () => {
+        if (data.loggedIn) {
+            const fetchUserData = async () => {
             const response = await fetch("/users/info");
             const data = await response.json();
             setImage(data.image);
           };
           fetchUserData();
         }
-      }, [data.loggedIn, navigate]);
+        }, [data.loggedIn, navigate]);
 
     const logout = async (event: any) => {
         event.preventDefault();
