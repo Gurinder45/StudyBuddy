@@ -42,49 +42,61 @@ router.post("/auth", async function (req, res, next) {
 //   console.log(req.file);
 // })
 
-router.post("/signup", multerUpload.single("image"), async function (req, res, next) {
-  console.log("HERE IT IS _______________________________________________________________")
-  console.log(req.file);
-  const { username, password, university, courses } = req.body;
-  
-  let base64 = req.file.buffer.toString('base64');
-  let bufferToStore = new Buffer(base64, 'base64');
+router.post(
+  "/signup",
+  multerUpload.single("image"),
+  async function (req, res, next) {
+    const { username, password, university, courses } = req.body;
 
-  // create a new user with the provided information
-  const user = new User({
-    username: username,
-    password: password,
-    university: university,
-    courses: courses,
-    //added the image of filepath to the image key
-    image: bufferToStore,
-    location: {
-      type: 'Point',
-      coordinates: [0, 0] // default coordinates
+    // let base64 = req.file.buffer.toString('base64');
+    // let bufferToStore = new Buffer(base64, 'base64');
+
+    let bufferToStore;
+    if (req.file) {
+      // If an image was provided in the request, use its buffer
+      let base64 = req.file.buffer.toString("base64");
+      bufferToStore = new Buffer(base64, "base64");
+    } else {
+      // If no image was provided, use the default image from default.avatar.js
+      // let base64 = fs.readFileSync(defaultAvatar, 'utf-8');
+      bufferToStore = Buffer.from(defaultAvatar, "base64");
     }
-  });
-
-  // save the new user to the database
-  try {
-    console.log('inside empty')
-    await user.save();
-    req.session.regenerate(function (err) {
-      if (err) {
-        console.log(err);
-        res.status(500).send("Session regeneration failed");
-      } else {
-        req.session.user = user;
-        console.log(req.session);
-        console.log(req.sessionID);
-        // the session has been regenerated, do something with it
-        res.status(200).send("Login successful");
-      }
+    // create a new user with the provided information
+    const user = new User({
+      username: username,
+      password: password,
+      university: university,
+      courses: courses,
+      //added the image of filepath to the image key
+      image: bufferToStore,
+      location: {
+        type: "Point",
+        coordinates: [0, 0], // default coordinates
+      },
     });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error creating user");
+
+    // save the new user to the database
+    try {
+      console.log("inside empty");
+      await user.save();
+      req.session.regenerate(function (err) {
+        if (err) {
+          console.log(err);
+          res.status(500).send("Session regeneration failed");
+        } else {
+          req.session.user = user;
+          console.log(req.session);
+          console.log(req.sessionID);
+          // the session has been regenerated, do something with it
+          res.status(200).send("Login successful");
+        }
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Error creating user");
+    }
   }
-});
+);
 
 // router.post("/signup", multerUpload.single("image"), async function (req, res, next) {
 //   const { username, password, university, courses, image } = req.body;
@@ -144,12 +156,14 @@ router.get("/check-logged-in", async function (req, res, next) {
   console.log(req.session);
   console.log(req.sessionID);
   let loggedIn = false;
-  let username = '';
+  let username = "";
   if (req.session.user) {
     loggedIn = true;
     username = req.session.user.username;
   }
-  const available = await User.findOne({ username: username }).select("available");
+  const available = await User.findOne({ username: username }).select(
+    "available"
+  );
   res.json({ loggedIn, username, available });
 });
 
@@ -178,7 +192,6 @@ router.get("/get-users-inoneKm", async (req, res) => {
 
     // Find all users within a km radius
     const usersWithinOneKm = await User.find({
-
       username: { $ne: username }, // Exclude current user
       available: true,
       location: {
@@ -195,14 +208,14 @@ router.get("/get-users-inoneKm", async (req, res) => {
         },
       },
     }).select("username location buddies _id"); //.populate('matchedbuddies'); <- can use this if need be depending on the implmentation of match buddy
-    
-    for(let i =0; i<usersWithinOneKm.length;i++){
+
+    for (let i = 0; i < usersWithinOneKm.length; i++) {
       console.log(usersWithinOneKm[i].username);
       console.log(usersWithinOneKm[i].location.coordinates);
       console.log(usersWithinOneKm[i].buddies);
     }
-    
-    console.log("from server")
+
+    console.log("from server");
     res.json({ usersWithinOneKm, username: username });
   } catch (err) {
     console.error(err);
@@ -211,14 +224,13 @@ router.get("/get-users-inoneKm", async (req, res) => {
 });
 //----------------------------------------
 
-
-router.post("/availability",(req,res)=>{
+router.post("/availability", (req, res) => {
   const username = req.session.user.username;
-  const {available} = req.body;
+  const { available } = req.body;
   const filter = { username: username };
-  const update ={
-    $set: { available: available},
-  }
+  const update = {
+    $set: { available: available },
+  };
   User.updateOne(filter, update, function (err, result) {
     if (err) {
       console.log(err);
@@ -230,12 +242,12 @@ router.post("/availability",(req,res)=>{
   });
 
   res.sendStatus(200);
-})
+});
 
 router.post("/post-loc/", (req, res) => {
   const username = req.session.user.username;
   const { lat, lng } = req.body;
-  
+
   const filter = { username: username };
   const update = {
     $set: { location: { type: "Point", coordinates: [lng, lat] } },
@@ -254,18 +266,17 @@ router.post("/post-loc/", (req, res) => {
   res.sendStatus(200);
 });
 
-
-
 router.post("/edit", async (req, res) => {
   const username = req.session.user.username;
   const university = req.body.university;
   const courses = req.body.courses;
-  console.log(req.body, req.file)
-  console.log("HERE IT IS _______________________________!!!!!!!!!!!!!!!!!!!")
+  console.log(req.body, req.file);
+  console.log("HERE IT IS _______________________________!!!!!!!!!!!!!!!!!!!");
   const image = req.body.image;
   console.log(req.body.image);
-  console.log("HERE IT IS ____________DONE___________________!!!!!!!!!!!!!!!!!!!")
-
+  console.log(
+    "HERE IT IS ____________DONE___________________!!!!!!!!!!!!!!!!!!!"
+  );
 
   try {
     const user = await User.findOneAndUpdate(
@@ -293,25 +304,24 @@ router.get("/info", async (req, res) => {
   }
 });
 
-
 router.get("/image/:username", async (req, res) => {
   const username = req.params.username;
   try {
     const user = await User.findOne({ username });
     if (user.image && user.image.length > 0) {
       let buffImg = user.image;
-      let base64 = buffImg.toString('base64');
-      let image = Buffer.from(base64, 'base64');
+      let base64 = buffImg.toString("base64");
+      let image = Buffer.from(base64, "base64");
       res.writeHead(200, {
-        'Content-Type': 'image/png',
-        'Content-Length': image.length
+        "Content-Type": "image/png",
+        "Content-Length": image.length,
       });
       res.end(image);
     } else {
-      let image = Buffer.from(defaultAvatar, 'base64');
+      let image = Buffer.from(defaultAvatar, "base64");
       res.writeHead(200, {
-        'Content-Type': 'image/png',
-        'Content-Length': image.length
+        "Content-Type": "image/png",
+        "Content-Length": image.length,
       });
       res.end(image);
     }
@@ -323,32 +333,33 @@ router.get("/image/:username", async (req, res) => {
 
 //----------SINGLE matchedbuddy info --------------
 
-router.get('/matchedbuddyinfo', async(req, res)=>{
-  const selfusername = req.session.user.username //send the buddy's username through 
+router.get("/matchedbuddyinfo", async (req, res) => {
+  const selfusername = req.session.user.username; //send the buddy's username through
 
   console.log("=MATCHED BUDDY INFO ");
   console.log(selfusername);
   console.log("MATCHED BUDDY DONEEEEEE ");
 
-  try{
-    const user = await User.find({username:selfusername})
+  try {
+    const user = await User.find({ username: selfusername });
     const viewbuddyusername = user[0].viewbuddy;
-    const buddyinformation = await User.find({username:viewbuddyusername})
-    console.log("MATCHED  VIEW BUDDY of current user------")
-    console.log(buddyinformation)
-    console.log("MATCHED  VIEW BUDDY of current user DONEEE------")
+    const buddyinformation = await User.find({ username: viewbuddyusername });
+    console.log("MATCHED  VIEW BUDDY of current user------");
+    console.log(buddyinformation);
+    console.log("MATCHED  VIEW BUDDY of current user DONEEE------");
 
-    res.json(buddyinformation)
+    res.json(buddyinformation);
     // console.log("OK")
-  }
-  catch(error){
+  } catch (error) {
     console.error(error);
-    res.status(500).json({error: "Internal Server Error when getting matchedbuddy info"})
+    res
+      .status(500)
+      .json({ error: "Internal Server Error when getting matchedbuddy info" });
   }
-})
+});
 
-router.post('/addsinglebuddy', async (req, res) => {
-  const buddyUsername = req.body.buddyname; //send the buddy's username through 
+router.post("/addsinglebuddy", async (req, res) => {
+  const buddyUsername = req.body.buddyname; //send the buddy's username through
   console.log("KATIES adding single buddy ");
   console.log(buddyUsername);
   console.log("KATIES adding single buddy DONEEEEEE ");
@@ -357,7 +368,9 @@ router.post('/addsinglebuddy', async (req, res) => {
   try {
     const user = await User.findOne({ username: selfuser });
     if (user) {
-      console.log("KATIES adding single buddy INFO own user actually foudn in db");
+      console.log(
+        "KATIES adding single buddy INFO own user actually foudn in db"
+      );
       console.log(user);
       console.log(buddyUsername);
       console.log("KATIES adding single buddy own user actually foudn in db");
@@ -373,10 +386,11 @@ router.post('/addsinglebuddy', async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error when getting matchedbuddy info" });
+    res
+      .status(500)
+      .json({ error: "Internal Server Error when getting matchedbuddy info" });
   }
 });
-
 
 //----------SINGLE matchedbuddy info --------------^^^^^
 module.exports = router;
