@@ -45,7 +45,7 @@ function App() {
             <div className='d-flex justify-content-center align-items-center my-auto vh-100'>
               <Spinner animation="border" variant='primary' style={{ width:'100px', height:'100px' }} />
             </div>
-            <Navigate to="/login" replace />
+            <Navigate to="/welcome" replace />
           </>} 
         />
         

@@ -22,19 +22,10 @@ function Map(){
     const [selectedMarker, setSelectedMarker] = useState<any>(null);
     const [socket, setSocket] = useState<any>(null);
     const [rooms,setRooms] = useState<any>([]);
-/*
-    useEffect(() => {
-      const newSocket = io("/meet-up");
-      setSocket(newSocket);
-    
-      return () => {
-        newSocket.close();
-      };
-    }, []);
-    */
+
 
     useEffect(() => {
-    navigator.geolocation.getCurrentPosition((position) => {
+    navigator.geolocation.watchPosition((position) => {
         console.log(position.coords.longitude)
         console.log(position.coords.latitude)
         const lat = position.coords.latitude;
