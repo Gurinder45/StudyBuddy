@@ -8,6 +8,7 @@ var userSchema = new Schema({
     university:{type: String, required:true},
     courses: {type: [String], required:true},
     buddies: {type: [String]},
+    available: {type: Boolean, required: false, default: false},
     location: {
         type: {
           type: String, 

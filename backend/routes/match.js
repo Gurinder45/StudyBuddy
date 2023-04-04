@@ -89,6 +89,7 @@ router.get('/candidates', async (req, res, next) => {
     const candidates = await User.find(
         { 
             username: { $nin: filterOut, $ne: currUser.username },
+            available: true,
             location: {
                 // Only consider users with location available
                 $near: {
