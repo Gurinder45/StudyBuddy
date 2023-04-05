@@ -20,7 +20,7 @@ const EditProfile = () => {
         const data = await response.json();
         setUniversity(data.university);
         setCourses(data.courses.join(", "));
-        setBio(data.bio);
+        setBio(data.bio || '');
         // get user's profile image
         setImage('/users/image/' + data.username);
       };
@@ -116,7 +116,7 @@ const EditProfile = () => {
             <Form.Control as="textarea" 
                 rows={3}
                 cols={10}
-                value={bio}
+                value={bio || ""}
                 onChange={(e)=>setBio(e.target.value)}/>
             {bio.length<50 && (
             <p style={{ color: 'red' }}>Bio requires a minimum of 50 characters</p>
