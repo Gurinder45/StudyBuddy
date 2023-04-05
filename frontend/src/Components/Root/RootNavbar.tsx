@@ -37,8 +37,8 @@ function RootNavbar({ loggedIn }: RootNavbarProps) {
             <Container>
             <div className="navbar-brand" style={{display:'flex', justifyContent:'centre', alignItems: 'center',margin:'auto', paddingRight:'10px'}}>
               {image && (
-              <div style={{ width: '50px', height: '50px', border: '2px solid black', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <img src={image} alt="Uploaded file" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <div style={{ width: '50px', height: '50px', border: '2px solid black', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: "50%"}}>
+                <img src={image} alt="Uploaded file" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: "50%"}} />
               </div>
               )}
             </div>
