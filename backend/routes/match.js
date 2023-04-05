@@ -16,7 +16,7 @@ router.get("/buddies", async (req, res, next) => {
   // Get list of users that are the current user's buddies
   const buddies = await User.find(
     { username: { $in: currUser.buddies } },
-    { password: 0 } // hide password
+    { password: 0, image: 0 } // hide password
   );
 
   res.json(buddies);
@@ -53,7 +53,7 @@ router.get("/matched", async (req, res, next) => {
   // Retrieve profile details of users
   let result = await User.find(
     { username: { $in: matchedUsers } },
-    { password: 0 } // DONT REVEAL PASSWORDS
+    { password: 0, image: 0 } // DONT REVEAL PASSWORDS
   );
   res.json(result);
 });
@@ -96,7 +96,7 @@ router.get("/candidates", async (req, res, next) => {
         },
       },
     },
-    { password: 0 }
+    { password: 0, image: 0 }
   );
 
   res.json(candidates);

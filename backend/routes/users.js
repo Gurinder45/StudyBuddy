@@ -144,7 +144,10 @@ router.post(
 
 router.get("/get-users", async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find(
+      {},
+      { password: 0, image: 0 }
+      );
 
     res.json(users);
   } catch (error) {
@@ -207,8 +210,9 @@ router.get("/get-users-inoneKm", async (req, res) => {
           },
           $maxDistance: 1000, // 1 km
         },
-      },
-    }).select("username location buddies _id"); //.populate('matchedbuddies'); <- can use this if need be depending on the implmentation of match buddy
+      }, },
+      { image: 0, password: 0 }
+      ).select("username location buddies _id"); //.populate('matchedbuddies'); <- can use this if need be depending on the implmentation of match buddy
 
     for (let i = 0; i < usersWithinOneKm.length; i++) {
       console.log(usersWithinOneKm[i].username);
