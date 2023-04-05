@@ -1,8 +1,7 @@
-import { Data } from "@react-google-maps/api";
-import { response } from "express";
-import React, { useContext, useEffect, useState } from "react";
+
+import React, { useEffect, useState } from "react";
 import { Button, Container, ListGroup, Card, ListGroupItem } from 'react-bootstrap';
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useLoaderData } from "react-router-dom";
 import "./BuddyProfile.css"
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
@@ -11,7 +10,7 @@ import { FaArrowCircleLeft, FaArrowCircleRight } from 'react-icons/fa';
 
 const BuddyProfile = () => {
   const navigate = useNavigate();
-  // const data: any = useLoaderData();
+  const data: any = useLoaderData();
   const location = useLocation();
   console.log(location);
   const [buddyprofile, setBuddyprofile] = useState<any>();
@@ -22,19 +21,22 @@ const BuddyProfile = () => {
 
 
   useEffect(()=>{
-    async function fetchdata(){
-
-      //PUT THE BUDDY INTO THE USERS BUDDY SCHEMA!! done when button clicked
-      //now i need to get the buddy's schema
-      const singlebuddy = await fetch('/users/matchedbuddyinfo')
-      const data = await singlebuddy.json()
-      setbuddyCourses(data[0].courses);
-      setbuddyUniversity(data[0].university);
-      setBuddyprofile(location.state.buddyusername);
-      setbuddyBio(data[0].bio);
-      setbuddyReview(data[0].reviews);
+    if (!data.loggedIn) {
+      setTimeout(() => navigate("/login"), 0);
+    } else {
+      const fetchdata = async () => {
+            //PUT THE BUDDY INTO THE USERS BUDDY SCHEMA!! done when button clicked
+        //now i need to get the buddy's schema
+        const singlebuddy = await fetch('/users/matchedbuddyinfo')
+        const data = await singlebuddy.json()
+        setbuddyCourses(data[0].courses);
+        setbuddyUniversity(data[0].university);
+        setBuddyprofile(location.state.buddyusername);
+        setbuddyBio(data[0].bio);
+        setbuddyReview(data[0].reviews);  
+      }
+      fetchdata();
     }
-    fetchdata();
   }, []);
   
   if(!buddyprofile){

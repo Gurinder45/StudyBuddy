@@ -33,7 +33,7 @@ function App() {
 
         <Route path="/profile" element={<EditProfile />} loader = {checkLoggedIn}/>
 
-        <Route path="/buddyprofile" element={<BuddyProfile />} />
+        <Route path="/buddyprofile" element={<BuddyProfile />} loader = {checkLoggedIn} />
         
         <Route path="/chats" element={<ChatList />} loader = {checkLoggedIn}/>
 
