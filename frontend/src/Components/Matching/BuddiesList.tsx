@@ -33,7 +33,15 @@ function BuddiesList() {
   const buddiesList = matchContext.buddies ?
   matchContext.buddies.map((b) => 
     <ListGroup.Item key={b.username} className="d-flex justify-content-between align-items-start">
-      { b.username }
+      <div className="d-flex align-items-center">
+        <img
+          src={`/users/image/${b.username}`}
+          alt="profile"
+          className="rounded-circle me-2"
+          style={{ width: "40px", height: "40px", border: "2px solid black" }}
+        />
+        <div style={{ fontWeight: "bold" }}>{ b.username }</div>
+      </div>
       <Button variant="danger" onClick={async () => {
         const response = await fetch('/matches/unmatch', {
           method: 'DELETE',
@@ -85,7 +93,7 @@ function BuddiesList() {
 
   return (
     <>
-      <h3>Your Buddies:</h3>
+      <h3 style={{ marginTop: "20px"}}>Your Buddies:</h3>
       <ListGroup>
         {buddiesList}
       </ListGroup>

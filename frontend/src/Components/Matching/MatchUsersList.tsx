@@ -11,7 +11,15 @@ function MatchUsersList() {
   const candidateList = matchContext.candidates ?
   matchContext.candidates.map((c) => 
     <ListGroup.Item key={c.username} className="d-flex justify-content-between align-items-start">
-      { c.username }
+      <div className="d-flex align-items-center">
+        <img
+          src={`/users/image/${c.username}`}
+          alt="profile"
+          className="rounded-circle me-2"
+          style={{ width: "40px", height: "40px", border: "2px solid black" }}
+        />
+        <div style={{ fontWeight: "bold" }}>{ c.username }</div>
+      </div>
       <Button onClick={async () => {
         const response = await fetch('/matches/match', {
           method: 'POST',
