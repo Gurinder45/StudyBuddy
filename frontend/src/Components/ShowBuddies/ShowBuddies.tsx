@@ -124,6 +124,13 @@ function Map(){
           console.log(marker.username)
           setNewMarker(marker)
         });
+
+        return () => {
+          socket.off("newmarker", (marker: any)=>{
+            console.log(marker.username)
+            setNewMarker(marker)
+          });
+        }
       }
     }, [socket]);
 
