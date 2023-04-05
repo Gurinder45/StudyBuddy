@@ -8,7 +8,8 @@ interface ModalProps{
     open:boolean;
     onClose:()=>void;
     chatId:string;
-    loggedInUser:any[];
+    usersInChat:any[];
+    loggedInUser:string;
     
 }
 
@@ -17,7 +18,7 @@ interface Review {
     reviews: string |FormDataEntryValue;
   }  
 
-const Modal = ({open, onClose, chatId, loggedInUser}:ModalProps) => {
+const Modal = ({open, onClose, chatId, usersInChat, loggedInUser}:ModalProps) => {
     const [reviewList, setReviewList] = useState([]);
 
     const navigate = useNavigate();
@@ -27,15 +28,16 @@ const Modal = ({open, onClose, chatId, loggedInUser}:ModalProps) => {
     const getBuddiesForReview = async () => {
         // const response = await fetch(`/chats/${chatId}/users`);
         // const data = await response.json();
-        const filteredUsers = loggedInUser.filter((user: any) => user.username !== loggedInUser[0].username);
+        console.log(usersInChat)
+        const filteredUsers = usersInChat.filter((user: any) => user.username !== loggedInUser);
         setUsers(filteredUsers);
     }; 
 
     useEffect(()=>{
         getBuddiesForReview();
-    }, [loggedInUser])
+    }, [usersInChat])
 
-    console.log(loggedInUser)
+    console.log(usersInChat)
     console.log(chatId)
     console.log(users)
 

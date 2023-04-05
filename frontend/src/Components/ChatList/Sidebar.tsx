@@ -80,7 +80,7 @@ const Sidebar = (props:any) => {
         <Button variant="outline-danger" size="sm" onClick={handleLeaveChat}>
           Leave Chat
         </Button>
-        <Modal open={openModal} chatId={chatId} loggedInUser={users} onClose={rejectReview}/>
+        <Modal open={openModal} chatId={chatId} usersInChat={users} loggedInUser={loggedInUser} onClose={rejectReview}/>
       </div>
     </div>
   );
