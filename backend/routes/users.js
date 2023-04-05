@@ -46,7 +46,8 @@ router.post(
   "/signup",
   multerUpload.single("image"),
   async function (req, res, next) {
-    const { username, password, university, courses } = req.body;
+    const { username, password, university } = req.body;
+    const courses = JSON.parse(req.body.courses);
 
     // let base64 = req.file.buffer.toString('base64');
     // let bufferToStore = new Buffer(base64, 'base64');

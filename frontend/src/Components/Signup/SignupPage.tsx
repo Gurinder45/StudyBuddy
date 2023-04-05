@@ -71,7 +71,7 @@ function SignupPage() {
         formData.append("username", username);
         formData.append("password", password);
         formData.append("university", university);
-        formData.append("courses", JSON.stringify(courses));
+        formData.append("courses", JSON.stringify(coursesArray));
             
         if(image){
             formData.append("image", image);
