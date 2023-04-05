@@ -165,11 +165,9 @@ function SignupPage() {
                 rows={3}
                 cols={10}
                 value={bio}
-                onChange={handleBioChange}
+                onChange={(event)=>{setBio(event.target.value)}}
+                minLength={15}
                 required />
-            {bio.length<50 && (
-            <p style={{ color: 'red' }}>Bio requires a minimum of 50 characters</p>
-            )}
           </FormGroup>
 
           <div className="d-flex justify-content-evenly">

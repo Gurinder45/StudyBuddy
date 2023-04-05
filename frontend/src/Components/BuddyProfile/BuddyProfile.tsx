@@ -71,13 +71,13 @@ const BuddyProfile = () => {
             <Carousel axis="horizontal"
                 showStatus={false}
                 className="relative"
-                renderArrowPrev={(clickHandler, hasPrev) => {
+                renderArrowPrev={(clickHandlerr, hasPrev) => {
                   return (
                     <div
                       className={`${
                         hasPrev ? 'absolute' : 'hidden'
                       } top-0 bottom-0 left-0 flex justify-center items-center p-3 opacity-30 hover:opacity-100 cursor-pointer z-20`}
-                      onClick={clickHandler}
+                      onClick={clickHandlerr}
                     >
                       <FaArrowCircleLeft className="w-9 h-9 text-white carousel-arrow prev" />
                     </div>

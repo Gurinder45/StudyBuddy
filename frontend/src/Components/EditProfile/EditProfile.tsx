@@ -7,9 +7,9 @@ const EditProfile = () => {
   const navigate = useNavigate();
   const data: any = useLoaderData();
   const [university, setUniversity] = useState("");
-  const [courses, setCourses] = useState<string[]>([]);
+  const [courses, setCourses] = useState<any[]>([]);
   const [image, setImage] = useState<any>(null);
-  const [bio, setBio] = useState("");
+  const [bio, setBio] = useState<any>("");
 
   useEffect(() => {
     if (!data.loggedIn) {
@@ -17,7 +17,7 @@ const EditProfile = () => {
     } else {
       const fetchUserData = async () => {
         const response = await fetch("/users/info");
-        const data = await response.json();
+        const data = await response.json(); 
         setUniversity(data.university);
         setCourses(data.courses);
         setBio(data.bio || '');
@@ -79,32 +79,13 @@ const EditProfile = () => {
         <Col sm={8} md={6} lg={4}>
         <h2>Edit Profile</h2>
         <Form onSubmit={handleSubmit} encType = "multipart/form-data">
-
-        {/* <FormGroup className='mb-3' controlId='formImage'>
-            <Form.Label>Profile Picture:</Form.Label>
-            <Form.Control 
-                type="file"
-                value={image || '' }
-                onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
-                  const file = e.target.files && e.target.files[0];
-                  if (file){
-                    setImage(file)
-                  }
-                }}
-                required />
-          </FormGroup> */}
-
-          {/* <FormGroup className='mb-3' controlId='formImage' style={{display:'inline-block', justifyContent:'centre', alignItems: 'center'}}> */}
-
-            <div style={{display:'inline-block',justifyContent:'centre', alignItems: 'center',margin:'auto', paddingLeft:'25%'}}>
+            <div style={{display:'inline-block', justifyContent:'center', alignItems: 'center',margin:'auto', paddingLeft:'25%'}}>
               {image && (
               <div style={{ width: '150px', height: '150px', borderRadius: '50%', border: '2px solid black', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                 <img src={image} alt="Uploaded file" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
               )}
             </div>
-           {/* </FormGroup>  */}
-
           <FormGroup className='mb-3 mt-3' controlId='formImage'>
             <Form.Label>Change Your Profile Picture:</Form.Label>
             <Form.Control 
@@ -147,10 +128,9 @@ const EditProfile = () => {
                 rows={3}
                 cols={10}
                 value={bio || ""}
-                onChange={(e)=>setBio(e.target.value)}/>
-            {bio.length<50 && (
-            <p style={{ color: 'red' }}>Bio requires a minimum of 50 characters</p>
-            )}
+                onChange={(e)=>setBio(e.target.value)}
+                minLength={15}
+                required/>
           </FormGroup>
           <div className="d-flex justify-content-evenly">
             <Button variant='primary' type="submit">Submit</Button>
