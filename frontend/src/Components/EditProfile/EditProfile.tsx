@@ -96,7 +96,7 @@ const EditProfile = () => {
 
           {/* <FormGroup className='mb-3' controlId='formImage' style={{display:'inline-block', justifyContent:'centre', alignItems: 'center'}}> */}
 
-            <div style={{display:'inline-block', justifyContent:'centre', alignItems: 'center',margin:'auto', paddingLeft:'25%'}}>
+            <div style={{display:'inline-block',justifyContent:'centre', alignItems: 'center',margin:'auto', paddingLeft:'25%'}}>
               {image && (
               <div style={{ width: '150px', height: '150px', borderRadius: '50%', border: '2px solid black', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                 <img src={image} alt="Uploaded file" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />

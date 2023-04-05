@@ -269,6 +269,19 @@ router.post("/edit", multerUpload.single("image"), async (req, res) => {
 }
 );
 
+router.get("/info", async (req, res) => {
+  console.log("we are here");
+  const username = req.session.user.username;
+  try {
+    const user = await User.findOne({ username });
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
 router.get("/image/:username", async (req, res) => {
   const username = req.params.username;
   try {
