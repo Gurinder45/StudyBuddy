@@ -26,6 +26,7 @@ function SignupPage() {
     const [university, setUniversity] = useState("");
     const [courses, setCourses] = useState<string[]>([]);
     const [usernameError, setUsernameError] = useState('');
+    const [bio, setBio] = useState("");
     const [image, setImage] = useState(null);
 
     const handleUsernameChange = async (event: { target: { value: React.SetStateAction<string>; }; }) => {
@@ -54,6 +55,13 @@ function SignupPage() {
         }
     }
 
+    const handleBioChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        if(usernameError === "Username is already taken."){
+            setUsername('');
+        }
+        setBio(event.target.value);
+    };
+
     const handleSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
         const filteredCourses = courses.filter(course => course !== "");
@@ -72,6 +80,7 @@ function SignupPage() {
         formData.append("password", password);
         formData.append("university", university);
         formData.append("courses", JSON.stringify(coursesArray));
+        formData.append("bio", bio);
             
         if(image){
             formData.append("image", image);
@@ -149,6 +158,20 @@ function SignupPage() {
               ))}
               <Button variant="outline-success" onClick={() => {setCourses([...courses, ""]);}} style={{ width: "100%" }}>+</Button>
           </FormGroup>
+
+          <FormGroup className='mb-3' controlId='formBio'>
+            <Form.Label>Please enter a short bio about yourself:</Form.Label>
+            <Form.Control as="textarea" 
+                rows={3}
+                cols={10}
+                value={bio}
+                onChange={handleBioChange}
+                required />
+            {bio.length<50 && (
+            <p style={{ color: 'red' }}>Bio requires a minimum of 50 characters</p>
+            )}
+          </FormGroup>
+
           <div className="d-flex justify-content-evenly">
             <Button variant='primary' type="submit">Submit</Button>
           </div>

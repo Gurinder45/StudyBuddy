@@ -9,6 +9,7 @@ const EditProfile = () => {
   const [university, setUniversity] = useState("");
   const [courses, setCourses] = useState<string[]>([]);
   const [image, setImage] = useState<any>(null);
+  const [bio, setBio] = useState("");
 
   useEffect(() => {
     if (!data.loggedIn) {
@@ -19,6 +20,7 @@ const EditProfile = () => {
         const data = await response.json();
         setUniversity(data.university);
         setCourses(data.courses);
+        setBio(data.bio || '');
         // get user's profile image
         setImage('/users/image/' + data.username);
       };
@@ -50,6 +52,7 @@ const EditProfile = () => {
     coursesArray.forEach((course) => {
       formData.append("courses[]", course);
     });
+    formData.append("bio", bio);
                 
     if(image){
       formData.append("image", image);
@@ -62,7 +65,7 @@ const EditProfile = () => {
     const data = await response.json();
     if(data) {
         alert(
-            `University set to: ${data.university} \nCourses set to ${data.courses}`)
+            `University set to: ${data.university} \nCourses set to ${data.courses}\n Bio is ${data.bio}`)
         navigate('/welcome')
     }
   };
@@ -93,7 +96,7 @@ const EditProfile = () => {
 
           {/* <FormGroup className='mb-3' controlId='formImage' style={{display:'inline-block', justifyContent:'centre', alignItems: 'center'}}> */}
 
-            <div style={{display:'inline-block', justifyContent:'centre', alignItems: 'center',margin:'auto', paddingLeft:'25%'}}>
+            <div style={{display:'inline-block',justifyContent:'centre', alignItems: 'center',margin:'auto', paddingLeft:'25%'}}>
               {image && (
               <div style={{ width: '150px', height: '150px', borderRadius: '50%', border: '2px solid black', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                 <img src={image} alt="Uploaded file" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -118,6 +121,7 @@ const EditProfile = () => {
               onChange={(e) => setUniversity(e.target.value)} />
           </FormGroup>
           <FormGroup className='mb-3' controlId='formCourses'>
+
               <Form.Label>Courses:</Form.Label>
               {courses.map((course, index) => (
                 <div key={index} className="d-flex">
@@ -136,6 +140,18 @@ const EditProfile = () => {
               ))}
               <Button variant="outline-success" onClick={() => {setCourses([...courses, ""]);}} style={{ width: "100%" }}>+</Button>
             </FormGroup>
+
+            <FormGroup className='mb-3' controlId='formBio'>
+            <Form.Label>Bio:</Form.Label>
+            <Form.Control as="textarea" 
+                rows={3}
+                cols={10}
+                value={bio || ""}
+                onChange={(e)=>setBio(e.target.value)}/>
+            {bio.length<50 && (
+            <p style={{ color: 'red' }}>Bio requires a minimum of 50 characters</p>
+            )}
+          </FormGroup>
           <div className="d-flex justify-content-evenly">
             <Button variant='primary' type="submit">Submit</Button>
           </div>
