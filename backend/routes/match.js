@@ -7,7 +7,7 @@ const Match = require("../match.model");
 router.get("/buddies", async (req, res, next) => {
   if (!req.session.user) {
     // not logged in
-    res.sendStatus(401);
+    return res.sendStatus(401);
   }
 
   // Get current user info
@@ -62,7 +62,7 @@ router.get("/matched", async (req, res, next) => {
 router.get("/candidates", async (req, res, next) => {
   if (!req.session.user) {
     // not logged in
-    res.sendStatus(401);
+    return res.sendStatus(401);
   }
 
   // Get user's current details
