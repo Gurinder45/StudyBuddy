@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useRef, useState, useMemo, useCallback, useContext } from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { GoogleMap, useLoadScript, Marker, InfoWindow, Circle } from "@react-google-maps/api";
 import './ShowBuddies.css';
 import { LatLng } from "use-places-autocomplete";
 import io from "socket.io-client";
+import { MatchContext, MatchContextType } from "../Matching/MatchContext";
 
 export default function ShowBuddies(){
    const {isLoaded} = useLoadScript({googleMapsApiKey:'AIzaSyDNSk4C-ACBV0F0z8yck_KYto3YS_yyZ2Q',})
@@ -22,10 +23,22 @@ function Map(){
     const [selectedMarker, setSelectedMarker] = useState<any>(null);
     const [socket, setSocket] = useState<any>(null);
     const [rooms,setRooms] = useState<any>([]);
+    const matchContext = useContext(MatchContext) as MatchContextType;
 
+    const buddiesList = matchContext.buddies ?
+    matchContext.buddies.map((b)=>{
+      return b.username;
+      
+    }):null;
+
+    const candidatesList = matchContext.candidates ?
+    matchContext.candidates.map((c)=>{
+      return c.username;
+      
+    }):null;
 
     useEffect(() => {
-    navigator.geolocation.watchPosition((position) => {
+    navigator.geolocation.getCurrentPosition((position) => {
         console.log(position.coords.longitude)
         console.log(position.coords.latitude)
         const lat = position.coords.latitude;
@@ -65,12 +78,14 @@ function Map(){
             const usersWithinOneKm = data.usersWithinOneKm;
             const user = data.username
             const newMarkers = usersWithinOneKm.map((user:any) => {
-              return {
-                lat: user.location.coordinates[1],
-                lng: user.location.coordinates[0],
-                username: user.username,
-                buddies: user.buddies
-              };
+              
+                return {
+                  lat: user.location.coordinates[1],
+                  lng: user.location.coordinates[0],
+                  username: user.username,
+                  buddies: user.buddies
+                };
+              
             },
             );
             console.log(newMarkers)
@@ -97,6 +112,7 @@ function Map(){
           .catch((error) => {
             console.log(error);
           });
+          
         
     });
     }, []);
@@ -108,6 +124,13 @@ function Map(){
           console.log(marker.username)
           setNewMarker(marker)
         });
+
+        return () => {
+          socket.off("newmarker", (marker: any)=>{
+            console.log(marker.username)
+            setNewMarker(marker)
+          });
+        }
       }
     }, [socket]);
 
@@ -128,23 +151,30 @@ function Map(){
       
     }
   }, [socket]);
+
     var url = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
     const renderMarkers = () => {
         return markers.map((marker:any, index:any) => {
-          if(marker.buddies && marker.buddies.includes(username)){
-            url = "http://maps.google.com/mapfiles/ms/icons/purple-dot.png"
+          if(candidatesList?.includes(marker.username) || buddiesList?.includes(marker.username)){
+            if(buddiesList && buddiesList.includes(marker.username)){
+              url = "http://maps.google.com/mapfiles/ms/icons/purple-dot.png"
+            }
+            else{
+              url = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+            }
+            return <Marker key={index} position={{ lat: marker.lat, lng: marker.lng }} title = {marker.username}  
+            icon = {{
+              url: url,
+              scale: 10
+            }}
+            onClick={() => {
+              
+              setSelectedMarker(marker);
+            }}
+            >
+            </Marker>;
           }
-          return <Marker key={index} position={{ lat: marker.lat, lng: marker.lng }} title = {marker.username}  
-          icon = {{
-            url: url,
-            scale: 10
-          }}
-          onClick={() => {
-            
-            setSelectedMarker(marker);
-          }}
-          >
-          </Marker>;
+         
         });
     };
     

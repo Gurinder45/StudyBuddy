@@ -7,6 +7,7 @@ function SignupPage() {
     const navigate = useNavigate();
     const data:any = useLoaderData();
     const [users, setUsers] = useState<any>([]);
+    
     useEffect(() => {
         if (data.loggedIn) {
         setTimeout(() => navigate('/welcome'), 0);
@@ -23,7 +24,7 @@ function SignupPage() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [university, setUniversity] = useState("");
-    const [courses, setCourses] = useState([]);
+    const [courses, setCourses] = useState<string[]>([]);
     const [usernameError, setUsernameError] = useState('');
     const [bio, setBio] = useState("");
     const [image, setImage] = useState(null);
@@ -36,42 +37,16 @@ function SignupPage() {
                 if(newUsername === users[i]){
                     setUsernameError('Username is already taken.');
                     break
-                }
-            
+                }  
                 else{
-                    setUsernameError('');
-                   
+                    setUsernameError('');               
                 }
-            }
-           
-        }
-        
-    };
-
-    const handlePasswordChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-        if(usernameError === "Username is already taken."){
-            setUsername('');
-        }
-        setPassword(event.target.value);
-    };
-
-    const handleUniversityChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-        if(usernameError === "Username is already taken."){
-            setUsername('');
-        }
-        setUniversity(event.target.value);
-    };
-
-    const handleCoursesChange = (event:any) => {
-        if(usernameError === "Username is already taken."){
-            setUsername('');
-        }
-        setCourses(event.target.value.split(','));
+            }         
+        }      
     };
 
     const handleImageChange = (event:any) =>{
         const selectedFile = event.target.files[0];
-        console.log("HERE IS THE IMAGEEE", selectedFile)
         if (selectedFile){
             setImage(selectedFile)
         }
@@ -89,40 +64,39 @@ function SignupPage() {
 
     const handleSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
-        if(username === '' || password === '' || university === '' || courses.length === 0 || !image || bio ===''){
-            setUsername('')
-            setPassword('')
-            setUniversity('')
-            setCourses([])
-            setImage(null)
-            setBio('')
+        const filteredCourses = courses.filter(course => course !== "");
+        const coursesArray = filteredCourses.map(course => course.trim());
+        if (usernameError !== '') {
+            alert(usernameError)
+            return
         }
-        else{
-            const formData = new FormData();
-            formData.append("username", username);
-            formData.append("password", password);
-            formData.append("university", university);
-            formData.append("courses", JSON.stringify(courses));
-            formData.append("bio", bio);
+        if (coursesArray.length === 0) {
+          alert("You must have at least one course");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("password", password);
+        formData.append("university", university);
+        formData.append("courses", JSON.stringify(coursesArray));
+        formData.append("bio", bio);
             
-            if(image){
-                formData.append("image", image);
-            }
+        if(image){
+            formData.append("image", image);
+        }
 
-            console.log("HERE______________________________",image);
-
-            const response = await fetch('/users/signup', {
-                method: "POST",
-                body: formData
-            });
-            if (response.ok) {
-            // Login successful
+        const response = await fetch('/users/signup', {
+            method: "POST",
+            body: formData
+        });
+        if (response.ok) {
+        // Login successful
             navigate("/welcome");
-            } else {
+        } else {
             // Login failed
             console.log("Signup failed");
-            }
-        }
+        }       
     }
         
 
@@ -140,16 +114,8 @@ function SignupPage() {
             <Form.Control 
                 type="file"
                 name="image"
-                onChange={(event) => handleImageChange(event)}
-                required />
-            {!image && (
-            <p style={{ color: 'red' }}>
-                Image needed
-            </p>
-            )}
+                onChange={(event) => handleImageChange(event)} />
           </FormGroup>
-
-
           <FormGroup className='mb-3' controlId='formUsername'>
             <Form.Label>Username:</Form.Label>
             <Form.Control type="text"
@@ -157,49 +123,40 @@ function SignupPage() {
                 onChange={handleUsernameChange}
                 required
                 minLength={3} />
-            {username.length < 3 && (
-            <p style={{ color: 'red' }}>
-                Username must be at least 3 characters long
-            </p>
-            )}
-            {usernameError && (
-            <p style={{ color: 'red' }}>
-                {usernameError}
-            </p>
-            )}
           </FormGroup>
           <FormGroup className='mb-3' controlId='formPassword'>
             <Form.Label>Password:</Form.Label>
             <Form.Control type="password"
                 value={password}
-                onChange={handlePasswordChange}
+                onChange={(event) => {setPassword(event.target.value)}}
                 required
                 minLength={4} />
-            {password.length < 4 && (
-            <p style={{ color: 'red' }}>
-                Password must be at least 4 characters long
-            </p>
-            )}
           </FormGroup>
           <FormGroup className='mb-3' controlId='formUniversity'>
             <Form.Label>University:</Form.Label>
             <Form.Control type="text"
                 value={university}
-                onChange={handleUniversityChange}
+                onChange={(event) => {setUniversity(event.target.value)}}
                 required />
-            {!university && (
-            <p style={{ color: 'red' }}>University field cannot be empty</p>
-            )}
           </FormGroup>
           <FormGroup className='mb-3' controlId='formCourses'>
-            <Form.Label>Courses (comma-separated):</Form.Label>
-            <Form.Control type="text"
-                value={courses.join(',')}
-                onChange={handleCoursesChange}
-                required />
-            {courses.length === 0 && (
-            <p style={{ color: 'red' }}>At least one course is required</p>
-            )}
+              <Form.Label>Courses:</Form.Label>
+              {courses.map((course, index) => (
+                <div key={index} className="d-flex">
+                  <Form.Control type="text" value={course}
+                    onChange={(e) => {
+                      const newCourses = [...courses];
+                      newCourses[index] = e.target.value;
+                      setCourses(newCourses);
+                    }} />
+                  <Button variant="outline-danger" onClick={() => {
+                    const newCourses = [...courses];
+                    newCourses.splice(index, 1);
+                    setCourses(newCourses);
+                  }}>X</Button>
+                </div>
+              ))}
+              <Button variant="outline-success" onClick={() => {setCourses([...courses, ""]);}} style={{ width: "100%" }}>+</Button>
           </FormGroup>
 
           <FormGroup className='mb-3' controlId='formBio'>
@@ -229,6 +186,3 @@ function SignupPage() {
             }
             
 export default SignupPage;
-
-
-

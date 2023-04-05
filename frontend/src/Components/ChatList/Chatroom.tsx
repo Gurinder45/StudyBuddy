@@ -115,7 +115,7 @@ const handleSubmit = (event: any) => {
               </Form>
             </div>
           </Col>
-          <Col md={3} style={{ marginTop: '30px' }}>
+          <Col md={3} style={{ marginTop: '5px' }}>
             <Sidebar chatId={id} loggedInUser={data.username}/>
           </Col>
         </Row>

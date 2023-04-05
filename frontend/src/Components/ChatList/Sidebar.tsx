@@ -67,14 +67,21 @@ const Sidebar = (props:any) => {
 
   return (
     <div className="mb-3">
-      <h4 style={ { textAlign: 'center'} }>Users</h4>
       <ListGroup>
         {users.map((user) => (
-          <ListGroup.Item key={user.username} className="border-0 mb-2">{user.username}</ListGroup.Item>
+          <ListGroup.Item key={user.username} className="border-0 mb-2 d-flex justify-content-center align-items-center">
+            <img
+              src={`/users/image/${user.username}`}
+              alt="profile"
+              className="rounded-circle me-2 border border-dark"
+              style={{ width: "40px", height: "40px" }}
+            />
+            <div className="text-center fw-bold">{user.username}</div>
+          </ListGroup.Item>
         ))}
       </ListGroup>
       <div className="d-grid gap-1">
-        <Button variant="outline-success" size="sm" onClick={()=> navigate(`/add-users/${chatId}`)}>
+        <Button variant="outline-success" size="sm" onClick={() => navigate(`/add-users/${chatId}`)}>
           Add Users
         </Button>
         <Button variant="outline-danger" size="sm" onClick={handleLeaveChat}>
@@ -84,7 +91,7 @@ const Sidebar = (props:any) => {
       </div>
     </div>
   );
-   
+  
 };
 
 export default Sidebar;
