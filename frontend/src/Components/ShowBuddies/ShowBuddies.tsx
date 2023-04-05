@@ -10,9 +10,11 @@ import ChatSpot from "./ChatSpots";
 
 export default function ShowBuddies(){
    const {isLoaded} = useLoadScript({googleMapsApiKey:'AIzaSyDNSk4C-ACBV0F0z8yck_KYto3YS_yyZ2Q',})
-   if(!isLoaded) return <div>Loading...</div> 
-   const [selectedType, setSelectedType] = useState<string | null>(null);
+   const [selectedType, setSelectedType] = useState<string>("");
 
+   if(!isLoaded) {return <div>Loading...</div>}
+   
+   
 
 
    return(
@@ -34,7 +36,6 @@ function Map({ selectedType }:any){
     const [newMarker, setNewMarker] = useState<any>(null);
     const [selectedMarker, setSelectedMarker] = useState<any>(null);
     const [socket, setSocket] = useState<any>(null);
-    const [rooms,setRooms] = useState<any>([]);
     const matchContext = useContext(MatchContext) as MatchContextType;
 
     const buddiesList = matchContext.buddies ?
@@ -48,6 +49,22 @@ function Map({ selectedType }:any){
       return c.username;
       
     }):null;
+
+    const chatrooms = matchContext.chatrooms?
+    matchContext.chatrooms.map((c)=>{
+      return c;
+      
+    }):null;
+
+    useEffect(() => {
+      if (chatrooms) {
+        const newDict:any = {};
+        chatrooms.forEach((chatroom) => {
+          newDict.chatroom.chatid = useState(null);
+        });
+        //setMyDict(newDict);
+      }
+    }, [matchContext.chatrooms]);
 
     useEffect(()=>{
       const newSocket = io("/meet-up");
@@ -117,7 +134,6 @@ function Map({ selectedType }:any){
             const usersWithinOneKm = data.usersWithinOneKm;
             const user = data.username
             const newMarkers = usersWithinOneKm.map((user:any) => {
-              
                 return {
                   lat: user.location.coordinates[1],
                   lng: user.location.coordinates[0],
@@ -153,17 +169,25 @@ function Map({ selectedType }:any){
 
   const OnCircleClick = useCallback((event: any) => {
     // create a new marker when the map is clicked
+    const group = chatrooms?.map((c)=>{
+        if(c.chatid == selectedType){
+          return c.title
+        }
+    })
     const marker = {
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
-      username: username+": Meet-up",
+      username: group+": Meet-up",
     }
     setNewMarker(marker);
     
     if(socket && selectedType){
+      socket.emit("add-marker",selectedType, marker);
+      /*
       rooms.map((room:any)=>{
         socket.emit("add-marker",selectedType, marker);
       })
+      */
     }
   }, [socket]);
 
