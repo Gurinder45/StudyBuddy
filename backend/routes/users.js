@@ -267,29 +267,36 @@ router.post("/post-loc/", (req, res) => {
   res.sendStatus(200);
 });
 
-router.post("/edit", async (req, res) => {
+router.post("/edit", multerUpload.single("image"), async (req, res) => {
   const username = req.session.user.username;
   const university = req.body.university;
   const courses = req.body.courses;
-  console.log(req.body, req.file);
-  console.log("HERE IT IS _______________________________!!!!!!!!!!!!!!!!!!!");
-  const image = req.body.image;
-  console.log(req.body.image);
-  console.log(
-    "HERE IT IS ____________DONE___________________!!!!!!!!!!!!!!!!!!!"
-  );
-
-  try {
-    const user = await User.findOneAndUpdate(
-      { username },
-      { university, courses, image },
-      // {image},
-      { new: true }
-    );
-    res.json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
+  if (req.file) {
+    let base64 = req.file.buffer.toString("base64");
+    image = new Buffer(base64, "base64");
+    try {
+      const user = await User.findOneAndUpdate(
+        { username },
+        { university, courses, image },
+        { new: true }
+      );
+      res.json(user);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  } else {
+    try {
+      const user = await User.findOneAndUpdate(
+        { username },
+        { university, courses },
+        { new: true }
+      );
+      res.json(user);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    }
   }
 });
 

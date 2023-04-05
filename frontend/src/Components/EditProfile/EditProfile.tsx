@@ -8,7 +8,7 @@ const EditProfile = () => {
   const data: any = useLoaderData();
   const [university, setUniversity] = useState("");
   const [courses, setCourses] = useState<string[]>([]);
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = useState<any>(null);
 
   useEffect(() => {
     if (!data.loggedIn) {
@@ -26,6 +26,16 @@ const EditProfile = () => {
     }
   }, [data.loggedIn, navigate]);
 
+  const handleImageChange = (event:any) =>{
+    const selectedFile = event.target.files[0];
+    if (selectedFile){
+        setImage(selectedFile)
+    }
+    else{
+        setImage(null)
+    }
+  }
+
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -35,17 +45,20 @@ const EditProfile = () => {
       alert("You must have at least one course");
       return;
     }
+    const formData = new FormData();
+    formData.append("university", university);
+    coursesArray.forEach((course) => {
+      formData.append("courses[]", course);
+    });
+                
+    if(image){
+      formData.append("image", image);
+    }
     const response = await fetch("/users/edit", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        university,
-        courses: coursesArray,
-        image
-      }),
+      body: formData,
     });
+
     const data = await response.json();
     if(data) {
         alert(
@@ -88,6 +101,14 @@ const EditProfile = () => {
               )}
             </div>
            {/* </FormGroup>  */}
+
+          <FormGroup className='mb-3 mt-3' controlId='formImage'>
+            <Form.Label>Change Your Profile Picture:</Form.Label>
+            <Form.Control 
+                type="file"
+                name="image"
+                onChange={(event) => handleImageChange(event)} />
+          </FormGroup>
 
           <FormGroup className='mb-3' controlId='formUniversity'>
             <Form.Label>University:</Form.Label>
