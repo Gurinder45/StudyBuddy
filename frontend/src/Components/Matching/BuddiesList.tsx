@@ -42,6 +42,20 @@ function BuddiesList() {
         />
         <div style={{ fontWeight: "bold" }}>{ b.username }</div>
       </div>
+      <div className="d-flex justify-content-end">
+      {/* this button is to go to the user profile page */}
+        <Link 
+          to={"/buddyprofile"} 
+          state = {{buddyusername:b.username}}
+          style={{ marginRight: "10px"}}
+          className="btn btn-light"
+          onClick={async () => {
+            await handleAddBuddy(b.username)
+          }}
+          >
+          View Profile
+        </Link>
+
       <Button variant="danger" onClick={async () => {
         const response = await fetch('/matches/unmatch', {
           method: 'DELETE',
@@ -59,33 +73,8 @@ function BuddiesList() {
       }}>
         Unmatch
       </Button>
+    </div>
 
-      {/* this button is to go to the user profile page */}
-      <Link 
-        to={"/buddyprofile"} 
-        state = {{buddyusername:b.username}}
-        className="btn btn-primary"
-        // variant="info" 
-        onClick={async () => {
-          // setBuddyprofile(b.username)
-          await handleAddBuddy(b.username)
-        //   const response = await fetch('/users/addsinglebuddy', {
-        //     method: 'POST',
-        //     headers: {
-        //       'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({ buddyname: b.username })
-        //   });
-        //   if (response.ok) {
-        //     // All good, update the match context
-        //     console.log("OK")
-        //   } else {
-        //     console.log(response.status);
-        //   }
-        }}
-        >
-        View
-      </Link>
 
     </ListGroup.Item>
   )

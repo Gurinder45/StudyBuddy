@@ -1,12 +1,29 @@
 import { response } from "express";
 import React, { useContext, useEffect, useState } from "react";
 import { Button, ListGroup } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import { MatchContext, MatchContextType } from "./MatchContext";
 import './MatchUsersList.css';
 
 function MatchUsersList() {
 
   const matchContext = useContext(MatchContext) as MatchContextType;
+
+  const handleAddBuddy = async(busername: string)=>{
+    const response = await fetch('/users/addsinglebuddy', {
+      method:'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify({buddyname: busername})
+    });
+    if(response.ok){
+      console.log('added before going to new page')
+    }
+    else{
+      console.log(response.status)
+    }
+  }
 
   const candidateList = matchContext.candidates ?
   matchContext.candidates.map((c) => 
@@ -20,7 +37,21 @@ function MatchUsersList() {
         />
         <div style={{ fontWeight: "bold" }}>{ c.username }</div>
       </div>
-      <Button onClick={async () => {
+      <div className="d-flex justify-content-end">
+      
+      <Link 
+          to={"/buddyprofile"} 
+          state = {{buddyusername:c.username}}
+          style={{ marginRight: "10px"}}
+          className="btn btn-light"
+          onClick={async () => {
+            await handleAddBuddy(c.username)
+          }}
+          >
+          View Profile
+        </Link>
+
+      <Button style={{ width:"93px"}} onClick={async () => {
         const response = await fetch('/matches/match', {
           method: 'POST',
           headers: {
@@ -38,6 +69,7 @@ function MatchUsersList() {
       }}>
         Match
       </Button>
+    </div>
     </ListGroup.Item>
   ) 
   : null;
