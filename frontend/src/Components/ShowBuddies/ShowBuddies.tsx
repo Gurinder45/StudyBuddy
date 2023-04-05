@@ -126,10 +126,7 @@ function Map(){
         });
 
         return () => {
-          socket.off("newmarker", (marker: any)=>{
-            console.log(marker.username)
-            setNewMarker(marker)
-          });
+          socket.close();
         }
       }
     }, [socket]);
