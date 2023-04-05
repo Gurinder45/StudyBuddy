@@ -31,10 +31,12 @@ const AddUsers = () => {
   };
 
   useEffect(() => {
+        // check logged in
         if (!data.loggedIn) {
           setTimeout(() => navigate("/login"), 0);
         } else {
             const fetchMatchedBuddies = async () => {
+                // get the users buddies
                 const response = await fetch("/matches/buddies");
                 const data = await response.json();
                 const buddyNames = data.map((buddy: any) => buddy.username);
@@ -53,7 +55,6 @@ const AddUsers = () => {
         }
   }, [data.loggedIn, navigate]);
 
-
   useEffect(() => {
     const newSocket = io("/chat", { query: { chatId: id } });
     setSocket(newSocket);
@@ -63,6 +64,8 @@ const AddUsers = () => {
     };
   }, []);
 
+
+  // Emits the buddies you added to server
   const handleSubmit = (event: any) => {
     event.preventDefault();
   
@@ -72,9 +75,7 @@ const AddUsers = () => {
         users: buddies,
       });
     }
-
     navigate(`/chatroom/${id}`)
-
   };
 
   return data.loggedIn ? (

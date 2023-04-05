@@ -8,6 +8,7 @@ const ChatList = () => {
   const data: any = useLoaderData();
   const [chats, setChats] = useState([]);
 
+  // fetch the users chats when they open then page
   useEffect(() => {
         if (!data.loggedIn) {
           setTimeout(() => navigate("/login"), 0);

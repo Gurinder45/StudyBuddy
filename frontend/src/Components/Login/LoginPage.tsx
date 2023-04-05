@@ -26,15 +26,11 @@ function LoginPage() {
       body: JSON.stringify({ username, password })
     });
 
-    console.log(response)
-
     if (response.ok) {
       // Login successful
       navigate("/welcome")
-      console.log('Login successful');
     } else {
       // Login failed
-      console.log('Login failed');
     }
   };
 

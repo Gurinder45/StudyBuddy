@@ -14,7 +14,6 @@ export default function RootPage() {
   const data:any = useLoaderData();
   
   const [available, setAvailable] = useState(data.available?.available);
-  console.log(data.available?.available)
   useEffect(() => {
     if (!data.loggedIn) {
       setTimeout(() => navigate('/login'), 0);
@@ -80,6 +79,5 @@ export const checkLoggedIn = async()=> {
   const response1 = await fetch('/users/get-users')
   const data1 = await response1.json();
   const mergedObject = { ...data, ...data1};
-  console.log(mergedObject)
   return mergedObject;
 }

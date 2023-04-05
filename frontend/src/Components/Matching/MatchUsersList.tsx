@@ -17,10 +17,7 @@ function MatchUsersList() {
       },
       body:JSON.stringify({buddyname: busername})
     });
-    if(response.ok){
-      console.log('added before going to new page')
-    }
-    else{
+    if(!response.ok){
       console.log(response.status)
     }
   }

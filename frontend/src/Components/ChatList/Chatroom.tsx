@@ -37,6 +37,7 @@ const Chatroom = () => {
     };
   }, []);
   
+  // Scroll messages automatically when a new message is sent
   useEffect(() => {
     messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
   }, [messages]);

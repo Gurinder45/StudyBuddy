@@ -12,11 +12,11 @@ const Sidebar = (props:any) => {
   const [socket, setSocket] = useState<any>(null);
   const [openModal, setOpenModal] = useState(false);
 
+
+// retrieves all the users in the chat
   const fetchUsers = async () => {
     const response = await fetch(`/chats/${chatId}/users`);
-    const data = await response.json();
-    // const filteredUsers = data.filter((user: any) => user.username !== loggedInUser);
-    // setUsers(filteredUsers);
+    const data = await response.json();;
     setUsers(data);
   }; 
 
@@ -41,13 +41,8 @@ const Sidebar = (props:any) => {
   const handleLeaveChat = () => {
     if (socket) {
       const confirmLeave = window.confirm("Are you sure you want to leave the chat?");
-      if (confirmLeave) {
-        // socket.emit("leave", {
-        //   chatroom: chatId,
-        //   user: loggedInUser,
-        // });    
+      if (confirmLeave) {    
         setOpenModal(true)
-        // navigate("/chats");
       }
     }
   };
