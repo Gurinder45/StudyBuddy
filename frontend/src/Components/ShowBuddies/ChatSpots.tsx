@@ -199,7 +199,7 @@ export default function ChatSpot({ onTypeSelect }:any){
             rooms.map((room: Chats) => (
               <tr key={room.chatid}>
                 <td>
-                  <Button variant="outline-secondary" onClick={() => handleTypeSelect(room.chatid)}>
+                  <Button variant="outline-secondary" style={{ width:"150px",  wordWrap: "break-word" }} onClick={() => handleTypeSelect(room.chatid)}>
                     {room.title}
                   </Button>
                 </td>
