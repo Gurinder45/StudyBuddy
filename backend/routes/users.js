@@ -42,57 +42,65 @@ router.post("/auth", async function (req, res, next) {
 //   console.log(req.file);
 // })
 
-router.post("/signup", multerUpload.single("image"), async function (req, res, next) {
-  console.log("HERE IT IS _______________________________________________________________")
-  console.log(req.file);
-  const { username, password, university, courses } = req.body;
-  
-  let base64 = req.file.buffer.toString('base64');
-  let bufferToStore = new Buffer(base64, 'base64');
+router.post(
+  "/signup",
+  multerUpload.single("image"),
+  async function (req, res, next) {
+    const { username, password, university, bio } = req.body;
+    const courses = JSON.parse(req.body.courses);
 
-  // create a new user with the provided information
-  const user = new User({
-    username: username,
-    password: password,
-    university: university,
-    courses: courses,
-    //added the image of filepath to the image key
-    image: bufferToStore,
-    location: {
-      type: 'Point',
-      coordinates: [0, 0] // default coordinates
+    let bufferToStore;
+    if (req.file) {
+      // If an image was provided in the request, use its buffer
+      let base64 = req.file.buffer.toString("base64");
+      bufferToStore = new Buffer(base64, "base64");
+    } else {
+      // If no image was provided, use the default image from default.avatar.js
+      // let base64 = fs.readFileSync(defaultAvatar, 'utf-8');
+      bufferToStore = Buffer.from(defaultAvatar, "base64");
     }
-  });
 
-  // save the new user to the database
-  try {
-    console.log('inside empty')
-    await user.save();
-    req.session.regenerate(function (err) {
-      if (err) {
-        console.log(err);
-        res.status(500).send("Session regeneration failed");
-      } else {
-        req.session.user = user;
-        console.log(req.session);
-        console.log(req.sessionID);
-        // the session has been regenerated, do something with it
-        res.status(200).send("Login successful");
-      }
+    // create a new user with the provided information
+    const user = new User({
+      username: username,
+      password: password,
+      university: university,
+      courses: courses,
+      bio: bio,
+      //added the image of filepath to the image key
+      image: bufferToStore,
+      location: {
+        type: "Point",
+        coordinates: [0, 0], // default coordinates
+      },
     });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error creating user");
-  }
-});
 
+    // save the new user to the database
+    try {
+      console.log("inside empty");
+      await user.save();
+      req.session.regenerate(function (err) {
+        if (err) {
+          console.log(err);
+          res.status(500).send("Session regeneration failed");
+        } else {
+          req.session.user = user;
+          console.log(req.session);
+          console.log(req.sessionID);
+          // the session has been regenerated, do something with it
+          res.status(200).send("Login successful");
+        }
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Error creating user");
+    }
+  }
+);
 
 router.get("/get-users", async (req, res) => {
   try {
-    const users = await User.find(
-      {},
-      { password: 0, image: 0 }
-      );
+    const users = await User.find({}, { password: 0, image: 0 });
 
     res.json(users);
   } catch (error) {
@@ -140,24 +148,26 @@ router.get("/get-users-inoneKm", async (req, res) => {
     }
 
     // Find all users within a km radius
-    const usersWithinOneKm = await User.find({
-      username: { $ne: username }, // Exclude current user
-      available: true,
-      location: {
-        // Only consider users with location available
-        $near: {
-          $geometry: {
-            type: "Point",
-            coordinates: [
-              currentUser.location.coordinates[0],
-              currentUser.location.coordinates[1],
-            ],
+    const usersWithinOneKm = await User.find(
+      {
+        username: { $ne: username }, // Exclude current user
+        available: true,
+        location: {
+          // Only consider users with location available
+          $near: {
+            $geometry: {
+              type: "Point",
+              coordinates: [
+                currentUser.location.coordinates[0],
+                currentUser.location.coordinates[1],
+              ],
+            },
+            $maxDistance: 1000, // 1 km
           },
-          $maxDistance: 1000, // 1 km
         },
-      }, },
+      },
       { image: 0, password: 0 }
-      ).select("username location buddies _id"); //.populate('matchedbuddies'); <- can use this if need be depending on the implmentation of match buddy
+    ).select("username location buddies _id"); //.populate('matchedbuddies'); <- can use this if need be depending on the implmentation of match buddy
 
     for (let i = 0; i < usersWithinOneKm.length; i++) {
       console.log(usersWithinOneKm[i].username);
@@ -216,22 +226,23 @@ router.post("/post-loc/", (req, res) => {
   res.sendStatus(200);
 });
 
-
-
 router.post("/addreview", async (req, res) => {
-  console.log(req.body)
-  console.log("HERE IT IS ____1234567890987654___________________________!!!!!!!!!!!!!!!!!!!")
+  console.log(req.body);
+  console.log(
+    "HERE IT IS ____1234567890987654___________________________!!!!!!!!!!!!!!!!!!!"
+  );
 
   try {
-    await Promise.all(req.body.map(async(review)=>{
-      const filter = {username: review.name};
-      const update = {$push: {reviews: review.reviews}};
-      const result = await User.updateMany(filter, update);
+    await Promise.all(
+      req.body.map(async (review) => {
+        const filter = { username: review.name };
+        const update = { $push: { reviews: review.reviews } };
+        const result = await User.updateMany(filter, update);
 
-      console.log(result);
-    }));
-      res.json({message: "Reviews added successfully"})
-      
+        console.log(result);
+      })
+    );
+    res.json({ message: "Reviews added successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
@@ -249,7 +260,7 @@ router.post("/edit", multerUpload.single("image"), async (req, res) => {
     try {
       const user = await User.findOneAndUpdate(
         { username },
-        { university, courses, image, bio},
+        { university, courses, image, bio },
         { new: true }
       );
       res.json(user);
@@ -261,7 +272,7 @@ router.post("/edit", multerUpload.single("image"), async (req, res) => {
     try {
       const user = await User.findOneAndUpdate(
         { username },
-        { university, courses, bio},
+        { university, courses, bio },
         { new: true }
       );
       res.json(user);
@@ -270,8 +281,7 @@ router.post("/edit", multerUpload.single("image"), async (req, res) => {
       res.status(500).json({ error: "Internal server error" });
     }
   }
-}
-);
+});
 
 router.get("/info", async (req, res) => {
   console.log("we are here");
@@ -284,7 +294,6 @@ router.get("/info", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
 
 router.get("/image/:username", async (req, res) => {
   const username = req.params.username;
