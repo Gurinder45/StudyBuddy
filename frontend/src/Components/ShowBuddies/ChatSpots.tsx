@@ -207,7 +207,7 @@ export default function ChatSpot({ onTypeSelect }:any){
                   {isSubmitted[room.chatid] ? (
                     <div>
                       {selectedTime[room.chatid]}
-                      <button onClick={()=>handleEditClick(room.chatid)}>Edit</button>
+                      <Button onClick={()=>handleEditClick(room.chatid)}>Edit</Button>
                     </div>
                   ) : (
                     <Form onSubmit={handleTimeSubmit} style={{ display:"flex" }}>
