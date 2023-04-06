@@ -31,6 +31,7 @@ function LoginPage() {
       navigate("/welcome")
     } else {
       // Login failed
+      alert("Wrong username/password.");
     }
   };
 
