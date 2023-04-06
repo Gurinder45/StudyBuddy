@@ -65,7 +65,7 @@ const MatchContextProvider = ({ children }: MatchContextProviderProps) => {
     };
 
     const updateChatrroms = ()=>{
-        fetch('/chat/')
+        fetch('/chats/')
         .then((response)=>{
             if(response.ok){
                 return response.json()
@@ -76,13 +76,54 @@ const MatchContextProvider = ({ children }: MatchContextProviderProps) => {
             
         })
         .then((data)=>{
-            const chats = data.chatroooms.map((chat:any)=>{
-                return{
-                    chatid: chat.id,
-                    title: chat.title,
-                    users: chat.users
+            
+            const chats = data.map((chat:any)=>{
+                if(chat.meetspot){
+                    if(chat.meetTime){
+                        return{
+                            chatid: chat.id,
+                            title: chat.title,
+                            users: chat.users,
+                            meetspot: chat.meetspot,
+                            meetTime: chat.meetTime
+                        }
+                    }
+                    else{
+                        return{
+                            chatid: chat.id,
+                            title: chat.title,
+                            users: chat.users,
+                            meetspot: chat.meetspot,
+                            meetTime: ""
+                        }
+                    }
+                    
                 }
+                else{
+                    if(chat.meetTime){
+                        return{
+                            chatid: chat.id,
+                            title: chat.title,
+                            users: chat.users,
+                            meetspot: null,
+                            meetTime: chat.meetTime
+
+                        }
+                    }
+                    else{
+                        return{
+                            chatid: chat.id,
+                            title: chat.title,
+                            users: chat.users,
+                            meetspot: null,
+                            meetTime: ""
+                        }
+                    }
+                    
+                }
+                
             })
+            
             setChatrooms(chats)
         })
     }
