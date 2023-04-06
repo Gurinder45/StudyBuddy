@@ -92,7 +92,7 @@ router.get("/candidates", async (req, res, next) => {
               currUser.location.coordinates[1],
             ],
           },
-          $maxDistance: 1000, // 1 km
+          $maxDistance: 2000, // 1 km
         },
       },
     },
