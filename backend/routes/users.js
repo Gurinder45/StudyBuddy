@@ -162,7 +162,7 @@ router.get("/get-users-inoneKm", async (req, res) => {
                 currentUser.location.coordinates[1],
               ],
             },
-            $maxDistance: 1000, // 1 km
+            $maxDistance: 2000, // 1 km
           },
         },
       },

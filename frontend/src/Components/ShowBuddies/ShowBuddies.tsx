@@ -130,78 +130,7 @@ function Map( {selectedType}:any){
       })
       setRoom(r)
     })
-/*
-    useEffect(() => {
-      const newSocket = io("/meet-up", { query: { chatId:  } });
-      setSocket(newSocket);
-    
-      return () => {
-        newSocket.close();
-      };
-    }, []);
-    */
-/*
-    useEffect(()=>{
-      const newSocket = io("/meet-up");
-      setSocket(newSocket);
-      chatrooms?.map((rooms:Chats)=>{
-        newSocket.emit("join room", rooms.chatid);
-      })
-      
-      /*
-            setSocket(newSocket);
-            const newrooms: any[] = []
-            newMarkers.map((marker:any)=>{
-              marker.buddies.map((buddy:any)=>{
-                if(buddy === user){
-                  const room = [user, marker.username]
-                  const string = room.sort().join()
-                  newrooms.push(string)
-                  if(newSocket){
-                    newSocket.emit("join room", string);
-                  }
-                }
-              })
-            })
-        
-    })
-    useEffect(()=>{
-      fetch("/chats/meet-spot")
-      .then((response)=>{
-        if (response.ok) {
-          return response.json();
-        }
-        throw response;
-      })
-      .then((data)=>{
-        const newdict:any = {}
-        
-        data.map((chat:any)=>{
-          
-          let marker
-          if(chat.meetspot){
-            marker = {
-              lat: chat.meetspot.coordinates[1],
-              lng: chat.meetspot.coordinates[0],
-              username: chat.title+": Meet-up",
-            }
-          }
-          else{
-            marker = {
-              lat: null,
-              lng: null,
-              username: chat.title+": Meet-up",
-            }
-          }
-          newdict[chat.id] = marker
-          
-        })
-        console.log(newdict)
-        
-        setMyDict(newdict)
-      })
-    },[])
-    */
+
 
 
 
@@ -329,32 +258,7 @@ function Map( {selectedType}:any){
     setMyDict(newdic)
     
 
-    //myDict[selectedType] = marker
-    //setNewMarker(marker);
-    /*
-    if(socket && selectedType){
-      socket.emit("add-marker",selectedType, marker);
-      /*
-      rooms.map((room:any)=>{
-        socket.emit("add-marker",selectedType, marker);
-      })
-      
-    }
-    {newMarker&&(
-          <Marker position={{lat: newMarker.lat, lng: newMarker.lng}} title = "Meet-up spot" icon = {{
-            url: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
-            scale: 10
-          }} 
-          onClick={() => {
-            setSelectedMarker({
-              lat: newMarker.lat,
-              lng: newMarker.lng,
-              username: newMarker.username
-            });
-          }}/>
-        )}
-
-    */
+   
   };
 
     const renderMeetmarkers =()=>{
@@ -438,7 +342,7 @@ function Map( {selectedType}:any){
         {loc && (
         <Circle
           center={loc}
-          radius={1000}
+          radius={2000}
           options={{
             fillColor: "#1a73e8",
             fillOpacity: 0.2,
