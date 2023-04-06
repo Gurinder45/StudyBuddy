@@ -1,5 +1,6 @@
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { Chats } from "../Chats";
+import { Button } from 'react-bootstrap';
 import { MatchContext, MatchContextType } from "../Matching/MatchContext";
 
 export default function ChatSpot({ onTypeSelect }:any){
@@ -198,9 +199,9 @@ export default function ChatSpot({ onTypeSelect }:any){
             rooms.map((room: Chats) => (
               <tr key={room.chatid}>
                 <td>
-                  <button onClick={() => handleTypeSelect(room.chatid)}>
+                  <Button variant="outline-secondary" onClick={() => handleTypeSelect(room.chatid)}>
                     {room.title}
-                  </button>
+                  </Button>
                 </td>
                 <td>
                   {isSubmitted[room.chatid] ? (
@@ -216,7 +217,7 @@ export default function ChatSpot({ onTypeSelect }:any){
                         value={selectedTime[room.chatid]}
                         onChange={(e) => handleTimechange(e, room.chatid)}
                       />
-                      <button type="submit">Submit</button>
+                      <Button type="submit" variant='primary'>Submit</Button>
                      
                     </form>
                   )}
