@@ -1,6 +1,6 @@
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { Chats } from "../Chats";
-import { Button } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import { MatchContext, MatchContextType } from "../Matching/MatchContext";
 
 export default function ChatSpot({ onTypeSelect }:any){
@@ -109,7 +109,7 @@ export default function ChatSpot({ onTypeSelect }:any){
     };
 
 
-    const handleTimechange = async(e: ChangeEvent<HTMLInputElement>, index: any)=>{
+    const handleTimechange = async(e: React.ChangeEvent<HTMLInputElement>, index: any)=>{
 
       let time: any  ={}
       let sub: any = {}
@@ -210,16 +210,18 @@ export default function ChatSpot({ onTypeSelect }:any){
                       <button onClick={()=>handleEditClick(room.chatid)}>Edit</button>
                     </div>
                   ) : (
-                    <form onSubmit={handleTimeSubmit}>
-                      <input
+                    <Form onSubmit={handleTimeSubmit} style={{ display:"flex" }}>
+                      <Form.Control
                         type="text"
+                        style={{ width: "auto" }}
+                        size="sm"
+                        width={"auto"}
                         name = {room.chatid}
                         value={selectedTime[room.chatid]}
-                        onChange={(e) => handleTimechange(e, room.chatid)}
+                        onChange={(e) => handleTimechange(e as any, room.chatid)}
                       />
                       <Button type="submit" variant='primary'>Submit</Button>
-                     
-                    </form>
+                    </Form>
                   )}
                 </td>
               </tr>
