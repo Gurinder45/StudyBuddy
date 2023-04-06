@@ -11,22 +11,39 @@ module.exports =
   function (io) {
     io.of("/meet-up").on("connection", async (socket) => {
       console.log("connected")
-      //let chatId = socket.handshake.query.chatId;
-      //console.log("Received new client for chat: " + chatId);
-      //socket.join(chatId);
-
+      /*
+      let chatId = socket.handshake.query.chatId;
+      console.log("Received new client for chat: " + chatId);
+      socket.join(chatId);
+      */
+*
       socket.on("join room", (room) => {
-        console.log(`User ${socket.id} joined room ${room}`);
+        console.log("Received new client for: " + room);
         socket.join(room);
       });
-      socket.on("buddy", (buddies)=>{
-        socket.emit("newbuddy",buddy)
-      })
+
+
+      
+      
       socket.on("add-marker", (room,marker) => {
         // emit a "new-marker" event to all connected clients
+        const filter = { id: room };
+        const update = {
+          $set: { meetspot: { type: "Point", coordinates: [marker.lng, marker.lat] } },
+        };
+        Chatroom.updateOne(filter, update, function (err, result) {
+          if (err) {
+            console.log(err);
+            return;
+          }
+      
+          console.log("Updated the location");
+          console.log(result);
+        });
+      
         console.log(`Message received from user ${socket.id}: ${marker}`);
-        console.log(room)
-        socket.broadcast.to(room).emit("newmarker", marker);
+        
+        socket.broadcast.to(room).emit("newmarker", marker,room);
       });
     });
   };

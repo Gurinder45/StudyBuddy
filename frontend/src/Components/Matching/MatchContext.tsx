@@ -1,11 +1,14 @@
 import React, { createContext, useState, useEffect, useCallback } from "react";
 import { User } from "../User";
+import { Chats } from "../Chats";
 // This file provides access to the MatchContext which stores information to be used across match components
 
 interface MatchContextType {
     candidates: User[] | null;
     buddies: User[] | null;
+    chatrooms: Chats[] | null;
     updateContext: () => void;
+
 }
 
 interface MatchContextProviderProps {
@@ -17,7 +20,7 @@ const MatchContext = createContext<MatchContextType | null>(null);
 const MatchContextProvider = ({ children }: MatchContextProviderProps) => {
     const [candidates, setCandidates] = useState<User[] | null>(null);
     const [buddies, setBuddies] = useState<User[] | null>(null);
-
+    const [chatrooms, setChatrooms] = useState<Chats[] | null>(null);
     const updateCallback = useCallback(async () => {
         await updateContext();
     }, [])
@@ -31,6 +34,7 @@ const MatchContextProvider = ({ children }: MatchContextProviderProps) => {
     const updateContext = () => {
         updateCandidates();
         updateBuddies();
+        updateChatrroms();
     };
 
     const updateCandidates = () => {
@@ -60,11 +64,75 @@ const MatchContextProvider = ({ children }: MatchContextProviderProps) => {
         })
     };
 
+    const updateChatrroms = ()=>{
+        fetch('/chats/')
+        .then((response)=>{
+            if(response.ok){
+                return response.json()
+            }
+            else{
+                console.log(response.status);
+            }
+            
+        })
+        .then((data)=>{
+            
+            const chats = data.map((chat:any)=>{
+                if(chat.meetspot){
+                    if(chat.meetTime){
+                        return{
+                            chatid: chat.id,
+                            title: chat.title,
+                            users: chat.users,
+                            meetspot: chat.meetspot,
+                            meetTime: chat.meetTime
+                        }
+                    }
+                    else{
+                        return{
+                            chatid: chat.id,
+                            title: chat.title,
+                            users: chat.users,
+                            meetspot: chat.meetspot,
+                            meetTime: ""
+                        }
+                    }
+                    
+                }
+                else{
+                    if(chat.meetTime){
+                        return{
+                            chatid: chat.id,
+                            title: chat.title,
+                            users: chat.users,
+                            meetspot: null,
+                            meetTime: chat.meetTime
+
+                        }
+                    }
+                    else{
+                        return{
+                            chatid: chat.id,
+                            title: chat.title,
+                            users: chat.users,
+                            meetspot: null,
+                            meetTime: ""
+                        }
+                    }
+                    
+                }
+                
+            })
+            
+            setChatrooms(chats)
+        })
+    }
+
     return (
         <MatchContext.Provider value={{ 
             candidates, 
             buddies,
-            
+            chatrooms,
             updateContext }}>
             {children}
         </MatchContext.Provider>

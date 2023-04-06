@@ -20,6 +20,26 @@ router.get("/", async (req, res, next) => {
   res.json(chatrooms);
 });
 
+router.post("/time-update", (req, res)=>{
+  const {time, id} = req.body;
+  const filter = { id: id};
+  console.log(id)
+  const update = {
+    $set: { meetTime: time },
+  };
+  Chatroom.updateOne(filter, update, function (err, result) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    console.log("Updated time");
+    console.log(result);
+  });
+
+  res.sendStatus(200);
+})
+
 // Create a new group chatroom (should be linked to a form)
 router.post("/new-group", async (req, res, next) => {
   if (!req.session.user) {
