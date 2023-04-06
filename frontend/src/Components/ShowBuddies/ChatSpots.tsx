@@ -156,6 +156,8 @@ export default function ChatSpot({ onTypeSelect }:any){
             })
           } 
           
+        } else {
+          alert("Your time should be in the format XX:XX (24 hour)");
         }
       
         
@@ -212,7 +214,7 @@ export default function ChatSpot({ onTypeSelect }:any){
                   ) : (
                     <Form onSubmit={handleTimeSubmit} style={{ display:"flex" }}>
                       <Form.Control
-                        type="text"
+                        type="time"
                         style={{ width: "auto" }}
                         size="sm"
                         width={"auto"}
