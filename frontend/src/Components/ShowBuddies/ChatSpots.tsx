@@ -207,8 +207,17 @@ export default function ChatSpot({ onTypeSelect }:any){
                 </td>
                 <td>
                   {isSubmitted[room.chatid] ? (
-                    <div>
-                      {selectedTime[room.chatid]}
+                    <div style={{ display: "flex" }}>
+                      <Form.Control
+                        type="time"
+                        style={{ width: "auto" }}
+                        size="sm"
+                        width={"auto"}
+                        name = {room.chatid}
+                        value={selectedTime[room.chatid]}
+                        readOnly={true}
+                        onChange={(e) => handleTimechange(e as any, room.chatid)}
+                      />
                       <Button onClick={()=>handleEditClick(room.chatid)}>Edit</Button>
                     </div>
                   ) : (
